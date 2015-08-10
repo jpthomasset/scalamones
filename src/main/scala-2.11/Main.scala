@@ -19,16 +19,18 @@ object Main extends App {
   import system.dispatcher
   val log = Logging(system, getClass)
 
-  log.info("Requesting the elevation of Mt. Everest from Googles Elevation API...")
+  log.info("Requesting stat api...")
 
-  // execution context for futures below
+  // Context for futures below
   import SprayJsonSupport._
   import json.ElasticJsonProtocol._
 
   val pipeline = sendReceive ~> unmarshal[NodesStat]
 
   val responseFuture = pipeline {
-    Get("http://localhost:9200/_nodes/stats")
+    // http://31.172.161.21:9200/_nodes/stats
+    // http://localhost:9200/_nodes/stats
+    Get("http://localhost:9201/_nodes/stats")
   }
 
   responseFuture onComplete {
@@ -41,7 +43,7 @@ object Main extends App {
       shutdown()
 
     case Success(somethingUnexpected) =>
-      log.warning("Sucess with raw response.", somethingUnexpected)
+      log.warning("Success with raw response.", somethingUnexpected)
       shutdown()
 
     case Failure(error) =>
