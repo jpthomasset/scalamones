@@ -1,18 +1,15 @@
-import elastic.ElasticJsonProtocol
+package com.frenchcoder.scalamones
 
-import scala.util.{Success, Failure}
-import scala.concurrent.duration._
 import akka.actor.ActorSystem
-import akka.pattern.ask
 import akka.event.Logging
 import akka.io.IO
-import spray.json.{JsonFormat, DefaultJsonProtocol}
+import akka.pattern.ask
 import spray.can.Http
 import spray.client.pipelining._
 import spray.util._
-import elastic.Stat._
-import elastic.ElasticJsonProtocol
-import spray.httpx.SprayJsonSupport
+
+import scala.concurrent.duration._
+import scala.util.{Failure, Success}
 
 /**
  *
@@ -25,8 +22,6 @@ object Main extends App {
   log.info("Requesting stat api...")
 
   // Context for futures below
-  import SprayJsonSupport._
-  import ElasticJsonProtocol._
 
   val pipeline = sendReceive ~> unmarshal[NodesStat]
 

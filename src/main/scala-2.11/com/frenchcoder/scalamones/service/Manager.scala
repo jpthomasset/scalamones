@@ -1,7 +1,8 @@
-package service
+package com.frenchcoder.scalamones.service
 
 import akka.actor.{Props, ActorRef, Actor}
-import service.Manager._
+import com.frenchcoder.scalamones.service.Manager.{UnMonitorServerListChange, MonitorServerListChange, ListServer}
+import Manager._
 
 object Manager {
   val managerProps = Props[Manager]()

@@ -1,4 +1,4 @@
-package elastic
+package com.frenchcoder.scalamones.elastic
 
 import Stat._
 import spray.json.DefaultJsonProtocol

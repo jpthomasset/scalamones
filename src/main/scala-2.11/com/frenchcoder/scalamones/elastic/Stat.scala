@@ -1,5 +1,4 @@
-package elastic
-
+package com.frenchcoder.scalamones.elastic
 
 object Stat {
 
