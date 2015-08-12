@@ -1,10 +1,10 @@
 package service
 
-import akka.actor.{ActorRef, Actor}
+import akka.actor.{Props, ActorRef, Actor}
+import service.Manager._
 
-
-class Manager extends Actor {
-
+object Manager {
+  val managerProps = Props[Manager]()
   /**
    * Message to add a server
    * @param host The host of the server to monitor
@@ -12,12 +12,18 @@ class Manager extends Actor {
    */
   case class AddServer(host: String, port: Int)
   case class ListServer()
+  case class RemoveServer(serverId: Int)
+
   case class ServerList(servers: Set[Server])
-  case class RemoveServer(server: Server)
+  case class ServerAdded(server: Server)
+  case class ServerRemoved(server: Server)
+  case class NoSuchServer(serverId: Int)
 
   case class MonitorServerListChange()
   case class UnMonitorServerListChange()
+}
 
+class Manager extends Actor {
 
   var _seqServerId = 0
   def nextServerId = {
@@ -30,14 +36,21 @@ class Manager extends Actor {
 
   def receive = {
     case AddServer(host, port) =>
-      servers += Server(nextServerId, host, port)
+      val server = Server(nextServerId, host, port)
+      servers += server
+      sender ! ServerAdded(server)
       // Todo Add service for this new host
       broadcastServerListChange()
 
     case ListServer => sender ! ServerList(servers)
 
-    case RemoveServer(server) =>
-      servers -= server
+    case RemoveServer(serverId) =>
+      val deletedServers = servers filter ( s => s.id == serverId)
+      if(deletedServers.size == 0) {
+        sender ! NoSuchServer(serverId)
+      }
+      servers -= deletedServers.head
+      sender ! ServerRemoved(deletedServers.head)
       // Todo Stop service for this new host
       broadcastServerListChange()
 
@@ -46,6 +59,6 @@ class Manager extends Actor {
   }
 
   def broadcastServerListChange() = {
-    serverListener foreach(_ ! servers)
+    serverListener foreach(_ ! ServerList(servers))
   }
 }
