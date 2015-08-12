@@ -1,3 +1,5 @@
+import elastic.ElasticJsonProtocol
+
 import scala.util.{Success, Failure}
 import scala.concurrent.duration._
 import akka.actor.ActorSystem
@@ -8,7 +10,8 @@ import spray.json.{JsonFormat, DefaultJsonProtocol}
 import spray.can.Http
 import spray.client.pipelining._
 import spray.util._
-import json._
+import elastic.Stat._
+import elastic.ElasticJsonProtocol
 import spray.httpx.SprayJsonSupport
 
 /**
@@ -23,14 +26,14 @@ object Main extends App {
 
   // Context for futures below
   import SprayJsonSupport._
-  import json.ElasticJsonProtocol._
+  import ElasticJsonProtocol._
 
   val pipeline = sendReceive ~> unmarshal[NodesStat]
 
   val responseFuture = pipeline {
     // http://31.172.161.21:9200/_nodes/stats
     // http://localhost:9200/_nodes/stats
-    Get("http://localhost:9201/_nodes/stats")
+    Get("http://localhost:9200/_nodes/stats")
   }
 
   responseFuture onComplete {
