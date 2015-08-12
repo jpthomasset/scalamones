@@ -31,13 +31,18 @@ class Manager extends Actor {
   def receive = {
     case AddServer(host, port) =>
       servers += Server(nextServerId, host, port)
-      sender ! ServerList(servers)
+      // Todo Add service for this new host
+      broadcastServerListChange()
 
     case ListServer => sender ! ServerList(servers)
 
     case RemoveServer(server) =>
       servers -= server
-      sender ! ServerList(servers)
+      // Todo Stop service for this new host
+      broadcastServerListChange()
+
+    case MonitorServerListChange => serverListener += sender
+    case UnMonitorServerListChange => serverListener -= sender
   }
 
   def broadcastServerListChange() = {
