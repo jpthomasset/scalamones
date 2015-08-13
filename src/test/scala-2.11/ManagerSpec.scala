@@ -18,7 +18,7 @@ with WordSpecLike with Matchers with BeforeAndAfterAll {
   "A Manager actor" must {
 
     "ack requester when server added" in {
-      val manager = system.actorOf(Manager.managerProps)
+      val manager = system.actorOf(Manager.props)
       manager ! AddServer("es.example.com", 1234)
 
       val addedMsg = expectMsgType[ServerAdded]
@@ -27,7 +27,7 @@ with WordSpecLike with Matchers with BeforeAndAfterAll {
     }
 
     "ack requester when server removed" in {
-      val manager = system.actorOf(Manager.managerProps)
+      val manager = system.actorOf(Manager.props)
 
       manager ! AddServer("es.example.com", 1234)
       val addedMsg = expectMsgType[ServerAdded]
@@ -40,7 +40,7 @@ with WordSpecLike with Matchers with BeforeAndAfterAll {
     }
 
     "notify ServerList listener when server added" in {
-      val manager = system.actorOf(Manager.managerProps)
+      val manager = system.actorOf(Manager.props)
       manager ! MonitorServerListChange
 
       manager ! AddServer("es.example.com", 1234)

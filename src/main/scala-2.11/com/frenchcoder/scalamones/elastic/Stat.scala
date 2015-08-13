@@ -181,8 +181,10 @@ object Stat {
                        breakers: Map[String, NodeBreakerStat]
                        )
 
+  sealed trait ElasticStat
+
   // http://portal.local-dev.com:9200/_nodes/stats
-  case class NodesStat(cluster_name: String, nodes: Map[String, NodeStat])
+  case class NodesStat(cluster_name: String, nodes: Map[String, NodeStat]) extends ElasticStat
 
   // http://portal.local-dev.com:9200/_cluster/health
   case class ClusterHealth(
@@ -196,6 +198,6 @@ object Stat {
                             relocating_shards: Int,
                             initializing_shards: Int,
                             unassigned_shards: Int
-                            )
+                            ) extends ElasticStat
 
 }

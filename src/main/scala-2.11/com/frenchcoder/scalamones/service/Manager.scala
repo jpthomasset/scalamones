@@ -5,12 +5,11 @@ import com.frenchcoder.scalamones.service.Manager.{UnMonitorServerListChange, Mo
 import Manager._
 
 object Manager {
-  val managerProps = Props[Manager]()
+  val props = Props[Manager]()
   /**
    * Message to add a server
    * @param host The host of the server to monitor
-   * @param port The port of the server to monitor
-   */
+   * @param port The port of the server to monitorj */
   case class AddServer(host: String, port: Int)
   case class ListServer()
   case class RemoveServer(serverId: Int)
