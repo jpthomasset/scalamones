@@ -1,5 +1,7 @@
 package com.frenchcoder.scalamones
 
+import com.frenchcoder.scalamones.service.KpiProvider
+
 import scala.util.{Success, Failure}
 import scala.concurrent.duration._
 import akka.actor.ActorSystem
@@ -23,10 +25,13 @@ object Main extends App {
   val log = Logging(system, getClass)
 
   log.info("Requesting stat api...")
-
-  // Context for futures below
   import SprayJsonSupport._
   import ElasticJsonProtocol._
+  val test = system.actorOf(KpiProvider.props[NodesStat]("http://localhost:9200/_nodes/stats"))
+
+/*
+  // Context for futures below
+
 
   val pipeline = sendReceive ~> unmarshal[NodesStat]
 
@@ -57,5 +62,5 @@ object Main extends App {
   def shutdown(): Unit = {
     IO(Http).ask(Http.CloseAll)(1.second).await
     system.shutdown()
-  }
+  }*/
 }

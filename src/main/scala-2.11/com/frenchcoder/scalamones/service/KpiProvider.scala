@@ -8,7 +8,8 @@ import spray.client.pipelining._
 import spray.httpx.SprayJsonSupport
 import spray.httpx.unmarshalling._
 import scala.util.{Failure, Success}
-import akka.util.Timeout
+import scala.concurrent.duration._
+import scala.reflect._
 
 
 object KpiProvider {
@@ -21,22 +22,25 @@ class KpiProvider[T: FromResponseUnmarshaller](val url:String) extends Actor {
   // Internal operation
   case class SendRequest()
 
-
-  // Context for pipeline
-  import SprayJsonSupport._
-  import ElasticJsonProtocol._
+  // Import context
   import context.dispatcher
 
   val pipeline = sendReceive ~> unmarshal[T]
-
+  val tclass = classTag[T]
   context.system.scheduler.scheduleOnce(1.second, self, SendRequest)
 
   def receive = {
     case SendRequest =>
       val f = pipeline { Get(url) }
       f onComplete {
-        case Success(data: T) => println("")
-        case Success(rawData) => println("")
+        case Success(data) =>
+          /*val t = data.asInstanceOf[T]
+          println("Ok")*/
+          if(data.isInstanceOf[T]) {
+            println("Ok")
+          } else {
+            println("KO !!")
+          }
         case Failure(error) => println("Failed to get url")
       }
 
