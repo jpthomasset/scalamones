@@ -1,10 +1,11 @@
 package com.frenchcoder.scalamones
 
 import com.frenchcoder.scalamones.service.KpiProvider
+import spray.httpx.unmarshalling._
 
 import scala.util.{Success, Failure}
 import scala.concurrent.duration._
-import akka.actor.ActorSystem
+import akka.actor.{Props, ActorSystem}
 import akka.pattern.ask
 import akka.event.Logging
 import akka.io.IO
@@ -27,7 +28,13 @@ object Main extends App {
   log.info("Requesting stat api...")
   import SprayJsonSupport._
   import ElasticJsonProtocol._
-  val test = system.actorOf(KpiProvider.props[NodesStat]("http://localhost:9200/_nodes/stats"))
+  //val test = system.actorOf(KpiProvider.nodeStatProps[NodeJvmStat](_.jvm)("http://localhost:9200"))
+  //val test = system.actorOf(Props(new KpiProvider[NodesStat, NodesStat]("http://localhost:9200/_nodes/stats", n => n)))
+  def nodeStatProps[T: FromResponseUnmarshaller](e: NodesStat => Option[T]) =
+    Props(new KpiProvider[NodesStat, Option[T]]("http://localhost:9200/_nodes/stats/jvm", e))
+  //val test2 = system.actorOf(Props(new KpiProvider[NodesStat, Option[NodeJvmStat]]("http://localhost:9200/_nodes/stats/jvm", n=> n.nodes.head._2.jvm )))
+  val test3 = system.actorOf(nodeStatProps[NodeJvmStat](n=> n.nodes.head._2.jvm ))
+    //.props[NodesStat]("http://localhost:9200/_nodes/stats"))
 
 /*
   // Context for futures below

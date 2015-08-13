@@ -170,15 +170,15 @@ object Stat {
                        host: String,
                        ip: Array[String],
                        //          indices: Map[String, Any],
-                       os: NodeOsStat,
-                       process: NodeProcessStat,
-                       jvm: NodeJvmStat,
-                       thread_pool: Map[String, NodeThreadPoolStat],
-                       network: Map[String, NodeNetworkStat],
-                       fs: NodeFsStat,
-                       transport: NodeTransportStat,
-                       http: NodeHttpStat,
-                       breakers: Map[String, NodeBreakerStat]
+                       os: Option[NodeOsStat],
+                       process: Option[NodeProcessStat],
+                       jvm: Option[NodeJvmStat],
+                       thread_pool: Option[Map[String, NodeThreadPoolStat]],
+                       network: Option[Map[String, NodeNetworkStat]],
+                       fs: Option[NodeFsStat],
+                       transport: Option[NodeTransportStat],
+                       http: Option[NodeHttpStat],
+                       breakers: Option[Map[String, NodeBreakerStat]]
                        )
 
   sealed trait ElasticStat
