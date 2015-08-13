@@ -20,6 +20,7 @@ object KpiProvider {
 
   import SprayJsonSupport._
   import ElasticJsonProtocol._
+
 /*
   def nodeStatProps[T: FromResponseUnmarshaller](e: NodeStat => Option[T])(baseUrl: String): Props =
     Props(new KpiProvider[NodesStat, Map[String, Option[T]]](baseUrl + "/_nodes/stats/jvm", (n => n.nodes map ( m => (m._1, e(m._2)))) ))
