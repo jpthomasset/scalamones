@@ -22,13 +22,13 @@ object KpiProvider {
   import ElasticJsonProtocol._
 
   private[service]
-  def nodeStatProps[T: JsonFormat](e: NodeStat => Option[T])(baseUrl: String): Props =
-    Props(new KpiProvider[NodesStat, Map[String, Option[T]]](baseUrl + "/_nodes/stats/jvm", (n => n.nodes map ( m => (m._1, e(m._2)))) ))
+  def nodeStatProps[T: JsonFormat](e: NodeStat => Option[T], path:String)(baseUrl: String): Props =
+    Props(new KpiProvider[NodesStat, Map[String, Option[T]]](baseUrl + path, (n => n.nodes map ( m => (m._1, e(m._2)))) ))
 
   private[service]
   val serviceMap: Map[String, (String => Props)] = Map(
-    classTag[NodeJvmStat].toString() -> nodeStatProps[NodeJvmStat](_.jvm),
-    classTag[NodeOsStat].toString() -> nodeStatProps[NodeOsStat](_.os)
+    classTag[NodeJvmStat].toString() -> nodeStatProps[NodeJvmStat](_.jvm, "/_nodes/stats/jvm"),
+    classTag[NodeOsStat].toString() -> nodeStatProps[NodeOsStat](_.os, "/_nodes/stats/os")
   )
 
 }
