@@ -30,10 +30,17 @@ object Main extends App {
   import ElasticJsonProtocol._
   //val test = system.actorOf(KpiProvider.nodeStatProps[NodeJvmStat](_.jvm)("http://localhost:9200"))
   //val test = system.actorOf(Props(new KpiProvider[NodesStat, NodesStat]("http://localhost:9200/_nodes/stats", n => n)))
-  def nodeStatProps[T: FromResponseUnmarshaller](e: NodesStat => T) =
-    Props(new KpiProvider[NodesStat, T]("http://localhost:9200/_nodes/stats/jvm", e))
+  /*
+  def nodeStatProps[T: JsonFormat](e: NodesStat => Map[String, Option[T]]) = {
+
+    import SprayJsonSupport._
+    import ElasticJsonProtocol._
+    Props(new KpiProvider[NodesStat, Map[String, Option[T]]]("http://localhost:9200/_nodes/stats/jvm", e))
+  }
+  */
   //val test2 = system.actorOf(Props(new KpiProvider[NodesStat, Option[NodeJvmStat]]("http://localhost:9200/_nodes/stats/jvm", n=> n.nodes.head._2.jvm )))
-  val test3 = system.actorOf(nodeStatProps[Map[String, Option[NodeJvmStat]]](n => n.nodes map ( m => (m._1, m._2.jvm))))
+  // val test3 = system.actorOf(nodeStatProps[NodeJvmStat](n => n.nodes map ( m => (m._1, m._2.jvm))))
+  val test = system.actorOf(KpiProvider.nodeStatProps[NodeJvmStat](_.jvm)("http://localhost:9200"))
     //.props[NodesStat]("http://localhost:9200/_nodes/stats"))
 
 /*
