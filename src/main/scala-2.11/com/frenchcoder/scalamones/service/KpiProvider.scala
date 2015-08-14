@@ -21,10 +21,11 @@ object KpiProvider {
   import SprayJsonSupport._
   import ElasticJsonProtocol._
 
-
+  private[service]
   def nodeStatProps[T: JsonFormat](e: NodeStat => Option[T])(baseUrl: String): Props =
     Props(new KpiProvider[NodesStat, Map[String, Option[T]]](baseUrl + "/_nodes/stats/jvm", (n => n.nodes map ( m => (m._1, e(m._2)))) ))
 
+  private[service]
   val serviceMap: Map[String, (String => Props)] = Map(
     classTag[NodeJvmStat].toString() -> nodeStatProps[NodeJvmStat](_.jvm),
     classTag[NodeOsStat].toString() -> nodeStatProps[NodeOsStat](_.os)
