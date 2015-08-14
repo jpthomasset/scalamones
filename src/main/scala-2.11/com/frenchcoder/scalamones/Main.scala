@@ -1,6 +1,7 @@
 package com.frenchcoder.scalamones
 
-import com.frenchcoder.scalamones.service.KpiProvider
+import com.frenchcoder.scalamones.service.Manager.AddServer
+import com.frenchcoder.scalamones.service.{Manager, KpiProvider}
 import spray.httpx.unmarshalling._
 
 import scala.util.{Success, Failure}
@@ -26,8 +27,8 @@ object Main extends App {
   val log = Logging(system, getClass)
 
   log.info("Requesting stat api...")
-  import SprayJsonSupport._
-  import ElasticJsonProtocol._
+  val manager = system.actorOf(Manager.props)
+  manager ! AddServer("127.0.0.1", 9200)
   //val test = system.actorOf(KpiProvider.nodeStatProps[NodeJvmStat](_.jvm, "/_nodes/stats/jvm")("http://localhost:9200"))
 
 

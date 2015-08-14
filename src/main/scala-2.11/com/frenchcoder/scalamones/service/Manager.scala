@@ -25,6 +25,8 @@ object Manager {
 
 class Manager extends Actor {
 
+  import context._
+
   var _seqServerId = 0
   def nextServerId = {
     _seqServerId += 1
@@ -40,6 +42,7 @@ class Manager extends Actor {
       servers += server
       sender ! ServerAdded(server)
       // Todo Add service for this new host
+      KpiProvider.startServices(context, "http://" + host + ":" + port)
       broadcastServerListChange()
 
     case ListServer => sender ! ServerList(servers)
