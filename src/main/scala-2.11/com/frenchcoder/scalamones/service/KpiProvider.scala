@@ -41,8 +41,10 @@ object KpiProvider {
 }
 
 class KpiProvider[T: FromResponseUnmarshaller, U: FromResponseUnmarshaller](val url:String, val extractor: T=>U) extends Actor {
-  import context._
 
+  // Remove import context._ to prevent ambiguous implicit ActorRefFactory in context & system
+  import context.dispatcher
+  import context.become
   // Internal operation
   case class SendRequest()
 
@@ -51,7 +53,6 @@ class KpiProvider[T: FromResponseUnmarshaller, U: FromResponseUnmarshaller](val 
   var watchers = Set.empty[ActorRef]
 
   //self ! SendRequest
-
   def receive = idle
 
   def idle: Receive = {
