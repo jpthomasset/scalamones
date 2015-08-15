@@ -48,7 +48,7 @@ class Manager extends Actor {
       sender ! ServerAdded(serverContext.server)
       broadcastServerListChange()
 
-    case ListServer => sender ! ServerList(servers map { case (k, v) => v.server } toSet)
+    case ListServer => sender ! ServerList((servers map { case (k, v) => v.server }).toSet)
 
     case RemoveServer(serverId) =>
 
@@ -68,6 +68,6 @@ class Manager extends Actor {
   }
 
   def broadcastServerListChange() = {
-    serverListener foreach(_ ! ServerList(servers map { case (k, v) => v.server } toSet))
+    serverListener foreach(_ ! ServerList((servers map { case (k, v) => v.server }).toSet))
   }
 }
