@@ -1,6 +1,7 @@
 package com.frenchcoder.scalamones.service
 
 import akka.actor._
+import akka.event.Logging
 import com.frenchcoder.scalamones.elastic.ElasticJsonProtocol
 import com.frenchcoder.scalamones.elastic.Stat._
 import com.frenchcoder.scalamones.service.KpiProvider.{Notify, UnMonitor, Monitor}
@@ -24,7 +25,7 @@ object KpiProvider {
   import SprayJsonSupport._
   import ElasticJsonProtocol._
 
-  def startServices(c: ActorContext, baseUrl: String) : Map[String, ActorRef] = {
+  def startServices(baseUrl: String)(implicit c: ActorContext) : Map[String, ActorRef] = {
     serviceMap map { case (key, value) => (key, c.actorOf(value(baseUrl))) }
   }
 
@@ -42,6 +43,8 @@ object KpiProvider {
 
 class KpiProvider[T: FromResponseUnmarshaller, U: FromResponseUnmarshaller](val url:String, val extractor: T=>U) extends Actor {
 
+  val log = Logging(context.system, getClass)
+
   // Remove import context._ to prevent ambiguous implicit ActorRefFactory in context & system
   import context.dispatcher
   import context.become
@@ -49,14 +52,17 @@ class KpiProvider[T: FromResponseUnmarshaller, U: FromResponseUnmarshaller](val 
   case class SendRequest()
 
 
+
   val pipeline = sendReceive ~> unmarshal[T]
   var watchers = Set.empty[ActorRef]
+  var latestValue: Option[U] = None
 
   //self ! SendRequest
   def receive = idle
 
   def idle: Receive = {
     case Monitor(watcher) =>
+      log.debug("Monitor message received, become active")
       watchers += watcher
       // Schedule update every 5 seconds
       val scheduledRequestor = context.system.scheduler.schedule(0.seconds, 5.seconds, self, SendRequest)
@@ -65,12 +71,18 @@ class KpiProvider[T: FromResponseUnmarshaller, U: FromResponseUnmarshaller](val 
 
   def active(scheduledRequestor: Cancellable): Receive = {
     case Monitor(watcher) =>
+      log.debug("Monitor message received, already active")
       watchers += watcher
+      // Send latest value to watcher so it gets immediately a value
+      latestValue foreach (watcher ! Notify(_))
 
     case UnMonitor(watcher) =>
+      log.debug("UnMonitor message received")
       watchers -= watcher
       if(watchers.isEmpty) {
+        log.debug("No more watchers, become idle")
         scheduledRequestor.cancel()
+        latestValue = None
         become(idle)
       }
 
@@ -78,17 +90,17 @@ class KpiProvider[T: FromResponseUnmarshaller, U: FromResponseUnmarshaller](val 
       val f = pipeline { Get(url) }
       f onComplete {
         case Success(data) =>
-          /*val t = data.asInstanceOf[T]
-          println("Ok")*/
+          log.debug(s"Received new data from ${url}")
           if(data.isInstanceOf[T]) {
             val embed = extractor(data.asInstanceOf[T])
             if(embed.isInstanceOf[U]) {
+              latestValue = Some(embed)
               // Notify watchers of new value
               watchers foreach( _ ! Notify(embed))
             }
           }
 
-        case Failure(error) => println("Failed to get url " + error)
+        case Failure(error) => log.error(error, s"Error while fetching data from ${url}")
       }
 
   }

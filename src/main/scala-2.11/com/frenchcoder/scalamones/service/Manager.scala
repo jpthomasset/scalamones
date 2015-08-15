@@ -1,6 +1,6 @@
 package com.frenchcoder.scalamones.service
 
-import akka.actor.{Props, ActorRef, Actor}
+import akka.actor.{PoisonPill, Props, ActorRef, Actor}
 import com.frenchcoder.scalamones.service.Manager.{UnMonitorServerListChange, MonitorServerListChange, ListServer}
 import Manager._
 
@@ -33,35 +33,41 @@ class Manager extends Actor {
     _seqServerId
   }
 
-  var servers = Set.empty[Server]
+  case class ServerContext(server: Server, services: Map[String, ActorRef])
+
+  var servers = Map.empty[Int, ServerContext]
   var serverListener = Set.empty[ActorRef]
 
   def receive = {
     case AddServer(host, port) =>
-      val server = Server(nextServerId, host, port)
-      servers += server
-      sender ! ServerAdded(server)
-      // Todo Add service for this new host
-      KpiProvider.startServices(context, "http://" + host + ":" + port)
+      val serverService = KpiProvider.startServices("http://" + host + ":" + port)
+      val serverContext = ServerContext(Server(nextServerId, host, port), serverService)
+
+      // Store services for future usage
+      servers += (serverContext.server.id -> serverContext)
+      sender ! ServerAdded(serverContext.server)
       broadcastServerListChange()
 
-    case ListServer => sender ! ServerList(servers)
+    case ListServer => sender ! ServerList(servers map { case (k, v) => v.server } toSet)
 
     case RemoveServer(serverId) =>
-      val deletedServers = servers filter ( s => s.id == serverId)
-      if(deletedServers.size == 0) {
-        sender ! NoSuchServer(serverId)
+
+      servers.get(serverId) match {
+        case Some(s) =>
+          sender ! ServerRemoved(s.server)
+          s.services foreach { case (k, v) => v ! PoisonPill}
+          servers = servers filterKeys(_ != serverId)
+          broadcastServerListChange()
+
+        case None =>
+          sender ! NoSuchServer(serverId)
       }
-      servers -= deletedServers.head
-      sender ! ServerRemoved(deletedServers.head)
-      // Todo Stop service for this new host
-      broadcastServerListChange()
 
     case MonitorServerListChange => serverListener += sender
     case UnMonitorServerListChange => serverListener -= sender
   }
 
   def broadcastServerListChange() = {
-    serverListener foreach(_ ! ServerList(servers))
+    serverListener foreach(_ ! ServerList(servers map { case (k, v) => v.server } toSet))
   }
 }
