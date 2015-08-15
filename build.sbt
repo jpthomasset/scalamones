@@ -14,5 +14,6 @@ libraryDependencies += "io.spray" % "spray-client_2.11" % "1.3.3"
 libraryDependencies += "io.spray" % "spray-json_2.11" % "1.3.2"
 libraryDependencies += "org.scalatest" % "scalatest_2.11" % "2.2.4" % "test"
 
+scalacOptions ++= Seq("-feature")
 
 fork := true
