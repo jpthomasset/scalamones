@@ -1,11 +1,16 @@
 package com.frenchcoder.scalamones.service
 
-import akka.actor.{PoisonPill, Props, ActorRef, Actor}
+import akka.actor._
 import com.frenchcoder.scalamones.service.Manager.{UnMonitorServerListChange, MonitorServerListChange, ListServer}
 import Manager._
+import spray.client.pipelining._
+import scala.concurrent.ExecutionContext
 
 object Manager {
-  val props = Props[Manager]()
+  def props(implicit refFactory: ActorRefFactory, executionContext: ExecutionContext) :Props =  {
+    implicit val s = sendReceive
+    Props(new Manager)
+  }
   /**
    * Message to add a server
    * @param host The host of the server to monitor
@@ -23,7 +28,7 @@ object Manager {
   case class UnMonitorServerListChange()
 }
 
-class Manager extends Actor {
+class Manager(implicit s:SendReceive) extends Actor {
 
   import context._
 

@@ -26,7 +26,7 @@ object Main extends App {
   import system.dispatcher
   val log = Logging(system, getClass)
 
-  log.info("Requesting stat api...")
+
   val manager = system.actorOf(Manager.props)
   manager ! AddServer("127.0.0.1", 9200)
   //val test = system.actorOf(KpiProvider.nodeStatProps[NodeJvmStat](_.jvm, "/_nodes/stats/jvm")("http://localhost:9200"))

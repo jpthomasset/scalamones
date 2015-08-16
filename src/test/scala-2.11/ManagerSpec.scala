@@ -4,6 +4,7 @@ import com.frenchcoder.scalamones.service.Manager
 import org.scalatest.WordSpecLike
 import org.scalatest.Matchers
 import org.scalatest.BeforeAndAfterAll
+import scala.concurrent.ExecutionContext.Implicits.global
 import Manager._
 
 class ManagerSpec(_system: ActorSystem) extends TestKit(_system) with ImplicitSender

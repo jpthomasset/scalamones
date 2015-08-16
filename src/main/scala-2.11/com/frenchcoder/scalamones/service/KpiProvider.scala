@@ -5,7 +5,6 @@ import akka.event.Logging
 import com.frenchcoder.scalamones.elastic.ElasticJsonProtocol
 import com.frenchcoder.scalamones.elastic.Stat._
 import com.frenchcoder.scalamones.service.KpiProvider.{Notify, UnMonitor, Monitor}
-import spray.can.Http
 import spray.client.pipelining._
 import spray.httpx.SprayJsonSupport
 import spray.json.{JsonFormat, DefaultJsonProtocol}
@@ -25,23 +24,23 @@ object KpiProvider {
   import SprayJsonSupport._
   import ElasticJsonProtocol._
 
-  def startServices(baseUrl: String)(implicit c: ActorContext) : Map[String, ActorRef] = {
-    serviceMap map { case (key, value) => (key, c.actorOf(value(baseUrl))) }
+  def startServices(baseUrl: String)(implicit c: ActorContext, s:SendReceive) : Map[String, ActorRef] = {
+    serviceMap map { case (key, value) => (key, c.actorOf(value(s, baseUrl))) }
   }
 
   private[service]
-  def nodeStatProps[T: JsonFormat](e: NodeStat => Option[T], path:String)(baseUrl: String): Props =
-    Props(new KpiProvider[NodesStat, Map[String, Option[T]]](baseUrl + path, (n => n.nodes map ( m => (m._1, e(m._2)))) ))
+  def nodeStatProps[T: JsonFormat](e: NodeStat => Option[T], path:String)(s:SendReceive, baseUrl: String): Props =
+    Props(new KpiProvider[NodesStat, Map[String, Option[T]]](s, baseUrl + path, (n => n.nodes map ( m => (m._1, e(m._2)))) ))
 
   private[service]
-  val serviceMap: Map[String, (String => Props)] = Map(
+  val serviceMap: Map[String, ((SendReceive, String) => Props)] = Map(
     classTag[NodeJvmStat].toString() -> nodeStatProps[NodeJvmStat](_.jvm, "/_nodes/stats/jvm"),
     classTag[NodeOsStat].toString() -> nodeStatProps[NodeOsStat](_.os, "/_nodes/stats/os")
   )
 
 }
 
-class KpiProvider[T: FromResponseUnmarshaller, U: FromResponseUnmarshaller](val url:String, val extractor: T=>U) extends Actor {
+class KpiProvider[T: FromResponseUnmarshaller, U: FromResponseUnmarshaller](val s:SendReceive, val url:String, val extractor: T=>U) extends Actor {
 
   val log = Logging(context.system, getClass)
 
@@ -50,10 +49,10 @@ class KpiProvider[T: FromResponseUnmarshaller, U: FromResponseUnmarshaller](val 
   import context.become
   // Internal operation
   case class SendRequest()
+  sendReceive
 
 
-
-  val pipeline = sendReceive ~> unmarshal[T]
+  val pipeline = s ~> unmarshal[T]
   var watchers = Set.empty[ActorRef]
   var latestValue: Option[U] = None
 
