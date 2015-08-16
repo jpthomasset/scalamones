@@ -21,47 +21,42 @@ import spray.httpx.SprayJsonSupport
 import scalafx.application.JFXApp
 import scalafx.scene.Scene
 import scalafxml.core.macros.sfxml
-import scalafxml.core.{FXMLLoader, DependenciesByType, FXMLView}
+import scalafxml.core.{ExplicitDependencies, FXMLLoader, DependenciesByType, FXMLView}
 import scalafx.Includes._
 import scalafx.event.ActionEvent
 import javafx.{scene => jfxs}
+
 /**
  *
  */
 object Main extends JFXApp {
 
-  /* WORKING
+
   implicit val system = ActorSystem("simple-spray-client")
+
   import system.dispatcher
   val log = Logging(system, getClass)
 
 
   val manager = system.actorOf(Manager.props)
+/*
   manager ! AddServer("127.0.0.1", 9200)
   manager ! Monitor[NodesStat](1)
 
   */
 
-  class TestController(val test:String) {
 
-    def onAddServer(event: ActionEvent) {
-      println("Custom controller " + test)
-    }
-  }
 
-  def dependencies = new DependenciesByType(Map.empty)
+  def dependencies = new ExplicitDependencies(Map("actorSystem" -> system, "manager" -> manager))
 
-  val loader = new FXMLLoader(getClass.getResource("/main.fxml"), dependencies)
-  loader.setController(new TestController("test"))
-  loader.load()
-
+  // Show Main window
   stage = new JFXApp.PrimaryStage() {
-    title = "Test window"
+    title = "ScalaMonEs - Elastic Monitoring"
     scene = new Scene(
-      loader.getRoot[jfxs.Parent]()
-
+      FXMLView(getClass.getResource("/main.fxml"), dependencies)
     )
-    FXMLView(getClass.getResource("/main.fxml"), dependencies)
+    onCloseRequest = handle { println("Closing") }
+
   }
 
 }
