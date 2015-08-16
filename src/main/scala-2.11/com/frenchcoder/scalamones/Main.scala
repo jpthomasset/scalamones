@@ -18,10 +18,19 @@ import elastic.Stat._
 import elastic.ElasticJsonProtocol
 import spray.httpx.SprayJsonSupport
 
+import scalafx.application.JFXApp
+import scalafx.scene.Scene
+import scalafxml.core.macros.sfxml
+import scalafxml.core.{FXMLLoader, DependenciesByType, FXMLView}
+import scalafx.Includes._
+import scalafx.event.ActionEvent
+import javafx.{scene => jfxs}
 /**
  *
  */
-object Main extends App {
+object Main extends JFXApp {
+
+  /* WORKING
   implicit val system = ActorSystem("simple-spray-client")
   import system.dispatcher
   val log = Logging(system, getClass)
@@ -30,41 +39,29 @@ object Main extends App {
   val manager = system.actorOf(Manager.props)
   manager ! AddServer("127.0.0.1", 9200)
   manager ! Monitor[NodesStat](1)
-  //val test = system.actorOf(KpiProvider.nodeStatProps[NodeJvmStat](_.jvm, "/_nodes/stats/jvm")("http://localhost:9200"))
 
+  */
 
-/*
-  // Context for futures below
+  class TestController(val test:String) {
 
-
-  val pipeline = sendReceive ~> unmarshal[NodesStat]
-
-  val responseFuture = pipeline {
-    // http://31.172.161.21:9200/_nodes/stats
-    // http://localhost:9200/_nodes/stats
-    Get("http://localhost:9200/_nodes/stats")
+    def onAddServer(event: ActionEvent) {
+      println("Custom controller " + test)
+    }
   }
 
-  responseFuture onComplete {
-    case Success(stat: NodesStat) =>
-      log.info("Found cluster name '{}'", stat.cluster_name)
-      stat.nodes.foreach { case (nodeName: String, nodeStat:NodeStat) =>
-        log.info(" | -> Node '{}'", nodeStat.name)
-      }
+  def dependencies = new DependenciesByType(Map.empty)
 
-      shutdown()
+  val loader = new FXMLLoader(getClass.getResource("/main.fxml"), dependencies)
+  loader.setController(new TestController("test"))
+  loader.load()
 
-    case Success(somethingUnexpected) =>
-      log.warning("Success with raw response.", somethingUnexpected)
-      shutdown()
+  stage = new JFXApp.PrimaryStage() {
+    title = "Test window"
+    scene = new Scene(
+      loader.getRoot[jfxs.Parent]()
 
-    case Failure(error) =>
-      log.error(error, "Error")
-      shutdown()
+    )
+    FXMLView(getClass.getResource("/main.fxml"), dependencies)
   }
 
-  def shutdown(): Unit = {
-    IO(Http).ask(Http.CloseAll)(1.second).await
-    system.shutdown()
-  }*/
 }
