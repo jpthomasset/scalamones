@@ -1,10 +1,13 @@
 package com.frenchcoder.scalamones.service
 
 import akka.actor._
-import com.frenchcoder.scalamones.service.Manager.{UnMonitorServerListChange, MonitorServerListChange, ListServer}
+import com.frenchcoder.scalamones.elastic.Stat.ElasticKpi
+import com.frenchcoder.scalamones.service.KpiProvider.KpiMonitor
+import com.frenchcoder.scalamones.service.Manager._
 import Manager._
 import spray.client.pipelining._
 import scala.concurrent.ExecutionContext
+import scala.reflect._
 
 object Manager {
   def props(implicit refFactory: ActorRefFactory, executionContext: ExecutionContext) :Props =  {
@@ -26,6 +29,12 @@ object Manager {
 
   case class MonitorServerListChange()
   case class UnMonitorServerListChange()
+  case class Monitor(serverId: Int, kpiClass:String)
+  case class NoSuchKpiProvider(kpiClass: String)
+
+  object Monitor {
+    def apply[T](serverId:Int)(implicit tag:ClassTag[T]): Monitor = new Monitor(serverId, tag.toString())
+  }
 }
 
 class Manager(implicit s:SendReceive) extends Actor {
@@ -70,6 +79,18 @@ class Manager(implicit s:SendReceive) extends Actor {
 
     case MonitorServerListChange => serverListener += sender
     case UnMonitorServerListChange => serverListener -= sender
+
+    case Monitor(serverId, tag) =>
+      servers.get(serverId) match {
+        case Some(s) =>
+          // Find corresponding KpiProvider
+          s.services.get(tag) match {
+            case Some(a) => a ! KpiMonitor(sender)
+            case None => sender ! NoSuchKpiProvider(tag)
+          }
+
+        case None => sender ! NoSuchServer(serverId)
+      }
   }
 
   def broadcastServerListChange() = {

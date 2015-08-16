@@ -2,6 +2,8 @@ package com.frenchcoder.scalamones.elastic
 
 object Stat {
 
+  sealed trait ElasticKpi
+
   case class NodeOsCpuStat(
                             sys: Int,
                             user: Int,
@@ -31,7 +33,7 @@ object Stat {
                          cpu: NodeOsCpuStat,
                          mem: NodeOsMemStat,
                          swap: NodeOsSwapStat
-                         )
+                         ) extends ElasticKpi
 
   case class NodeProcessCpuStat(
                                  percent: Int,
@@ -51,7 +53,7 @@ object Stat {
                               open_file_descriptors: Int,
                               cpu: NodeProcessCpuStat,
                               mem: NodeProcessMemStat
-                              )
+                              ) extends ElasticKpi
 
 
   case class NodeJvmMemPoolStat(
@@ -99,7 +101,7 @@ object Stat {
                                  rejected: Int,
                                  largest: Int,
                                  completed: Int
-                                 )
+                                 ) extends ElasticKpi
 
   case class NodeJvmStat(
                           timestamp: Long,
@@ -108,7 +110,7 @@ object Stat {
                           threads: NodeJvmThreadsStat,
                           gc: NodeJvmGcStat,
                           buffer_pools: Map[String, NodeJvmBufferPoolStat]
-                          )
+                          ) extends ElasticKpi
 
   case class NodeNetworkStat(
                               active_opens: Long,
@@ -121,7 +123,7 @@ object Stat {
                               attempt_fails: Long,
                               in_errs: Long,
                               out_rsts: Long
-                              )
+                              ) extends ElasticKpi
 
   case class NodeFsTotalStat(
                               total_in_bytes: Long,
@@ -142,7 +144,7 @@ object Stat {
                          timestamp: Long,
                          total: NodeFsTotalStat,
                          data: Array[NodeFsDataStat]
-                         )
+                         ) extends ElasticKpi
 
   case class NodeTransportStat(
                                 server_open: Long,
@@ -150,9 +152,9 @@ object Stat {
                                 rx_size_in_bytes: Long,
                                 tx_count: Long,
                                 tx_size_in_bytes: Long
-                                )
+                                ) extends ElasticKpi
 
-  case class NodeHttpStat(current_open: Long, total_opened: Long)
+  case class NodeHttpStat(current_open: Long, total_opened: Long) extends ElasticKpi
 
   case class NodeBreakerStat(
                               limit_size_in_bytes: Long,
@@ -161,7 +163,7 @@ object Stat {
                               estimated_size: String,
                               overhead: Double,
                               tripped: Int
-                              )
+                              ) extends ElasticKpi
 
   case class NodeStat(
                        timestamp: Long,
@@ -179,12 +181,11 @@ object Stat {
                        transport: Option[NodeTransportStat],
                        http: Option[NodeHttpStat],
                        breakers: Option[Map[String, NodeBreakerStat]]
-                       )
+                       ) extends ElasticKpi
 
-  sealed trait ElasticStat
 
   // http://portal.local-dev.com:9200/_nodes/stats
-  case class NodesStat(cluster_name: String, nodes: Map[String, NodeStat]) extends ElasticStat
+  case class NodesStat(cluster_name: String, nodes: Map[String, NodeStat])
 
   // http://portal.local-dev.com:9200/_cluster/health
   case class ClusterHealth(
@@ -198,6 +199,6 @@ object Stat {
                             relocating_shards: Int,
                             initializing_shards: Int,
                             unassigned_shards: Int
-                            ) extends ElasticStat
+                            )
 
 }

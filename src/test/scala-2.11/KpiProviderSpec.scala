@@ -3,7 +3,7 @@ import akka.testkit.{ImplicitSender, TestKit}
 import com.frenchcoder.scalamones.elastic.ElasticJsonProtocol
 import com.frenchcoder.scalamones.elastic.Stat.NodesStat
 import com.frenchcoder.scalamones.service.KpiProvider
-import com.frenchcoder.scalamones.service.KpiProvider.{Notify, Monitor}
+import com.frenchcoder.scalamones.service.KpiProvider.{KpiNotify, KpiMonitor}
 import org.scalatest.{BeforeAndAfterAll, Matchers, WordSpecLike}
 import spray.http._
 import spray.httpx.SprayJsonSupport
@@ -30,8 +30,8 @@ with WordSpecLike with Matchers with BeforeAndAfterAll {
       import ElasticJsonProtocol._
 
       val provider = system.actorOf(Props(new KpiProvider[NodesStat, NodesStat](sendAndReceive(emptyNodeStatJson), "dummyUrl", (n => n))))
-      provider ! Monitor(self)
-      val nodeValue = expectMsgType[Notify[NodesStat]]
+      provider ! KpiMonitor(self)
+      val nodeValue = expectMsgType[KpiNotify[NodesStat]]
     }
   }
 

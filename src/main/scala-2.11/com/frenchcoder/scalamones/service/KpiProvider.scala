@@ -4,7 +4,7 @@ import akka.actor._
 import akka.event.Logging
 import com.frenchcoder.scalamones.elastic.ElasticJsonProtocol
 import com.frenchcoder.scalamones.elastic.Stat._
-import com.frenchcoder.scalamones.service.KpiProvider.{Notify, UnMonitor, Monitor}
+import com.frenchcoder.scalamones.service.KpiProvider.{KpiNotify, KpiUnMonitor, KpiMonitor}
 import spray.client.pipelining._
 import spray.httpx.SprayJsonSupport
 import spray.json.{JsonFormat, DefaultJsonProtocol}
@@ -16,9 +16,9 @@ import scala.reflect._
 
 object KpiProvider {
 
-  case class Monitor(watcher: ActorRef)
-  case class UnMonitor(watcher: ActorRef)
-  case class Notify[T](kpi:T)
+  case class KpiMonitor(watcher: ActorRef)
+  case class KpiUnMonitor(watcher: ActorRef)
+  case class KpiNotify[T](kpi:T)
 
 
   import SprayJsonSupport._
@@ -60,7 +60,7 @@ class KpiProvider[T: FromResponseUnmarshaller, U: FromResponseUnmarshaller](val 
   def receive = idle
 
   def idle: Receive = {
-    case Monitor(watcher) =>
+    case KpiMonitor(watcher) =>
       log.debug("Monitor message received, become active")
       watchers += watcher
       // Schedule update every 5 seconds
@@ -69,13 +69,13 @@ class KpiProvider[T: FromResponseUnmarshaller, U: FromResponseUnmarshaller](val 
   }
 
   def active(scheduledRequestor: Cancellable): Receive = {
-    case Monitor(watcher) =>
+    case KpiMonitor(watcher) =>
       log.debug("Monitor message received, already active")
       watchers += watcher
       // Send latest value to watcher so it gets immediately a value
-      latestValue foreach (watcher ! Notify(_))
+      latestValue foreach (watcher ! KpiNotify(_))
 
-    case UnMonitor(watcher) =>
+    case KpiUnMonitor(watcher) =>
       log.debug("UnMonitor message received")
       watchers -= watcher
       if(watchers.isEmpty) {
@@ -95,7 +95,7 @@ class KpiProvider[T: FromResponseUnmarshaller, U: FromResponseUnmarshaller](val 
             if(embed.isInstanceOf[U]) {
               latestValue = Some(embed)
               // Notify watchers of new value
-              watchers foreach( _ ! Notify(embed))
+              watchers foreach( _ ! KpiNotify(embed))
             }
           }
 
