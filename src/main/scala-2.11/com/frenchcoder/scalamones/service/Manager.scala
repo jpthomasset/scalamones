@@ -75,9 +75,9 @@ class Manager(implicit s:SendReceive) extends Actor {
 
       servers.get(serverId) match {
         case Some(s) =>
-          sender ! ServerRemoved(s.server)
           s.services foreach { case (k, v) => v ! PoisonPill}
           servers = servers filterKeys(_ != serverId)
+          sender ! ServerRemoved(s.server)
           broadcastServerListChange()
 
         case None =>
@@ -88,16 +88,15 @@ class Manager(implicit s:SendReceive) extends Actor {
     case UnMonitorServerListChange => serverListener -= sender
 
     case Monitor(serverId, tag) =>
-      sendMonitoringRequest(serverId, tag, KpiMonitor(sender))
+      forwardMonitoringRequest(serverId, tag, KpiMonitor(sender))
 
     case UnMonitor(serverId, tag) =>
-      sendMonitoringRequest(serverId, tag, KpiUnMonitor(sender))
-
+      forwardMonitoringRequest(serverId, tag, KpiUnMonitor(sender))
 
 
   }
 
-  def sendMonitoringRequest(serverId:Int, tag:String, message: Any): Unit = {
+  def forwardMonitoringRequest(serverId:Int, tag:String, message: Any): Unit = {
     servers.get(serverId) match {
       case Some(s) =>
         // Find corresponding KpiProvider
