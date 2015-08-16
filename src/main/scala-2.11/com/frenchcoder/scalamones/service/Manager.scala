@@ -2,7 +2,7 @@ package com.frenchcoder.scalamones.service
 
 import akka.actor._
 import com.frenchcoder.scalamones.elastic.Stat.ElasticKpi
-import com.frenchcoder.scalamones.service.KpiProvider.KpiMonitor
+import com.frenchcoder.scalamones.service.KpiProvider.{KpiUnMonitor, KpiMonitor}
 import com.frenchcoder.scalamones.service.Manager._
 import Manager._
 import spray.client.pipelining._
@@ -29,11 +29,18 @@ object Manager {
 
   case class MonitorServerListChange()
   case class UnMonitorServerListChange()
+
   case class Monitor(serverId: Int, kpiClass:String)
+  case class UnMonitor(serverId: Int, kpiClass:String)
   case class NoSuchKpiProvider(kpiClass: String)
+
 
   object Monitor {
     def apply[T](serverId:Int)(implicit tag:ClassTag[T]): Monitor = new Monitor(serverId, tag.toString())
+  }
+
+  object UnMonitor {
+    def apply[T](serverId:Int)(implicit tag:ClassTag[T]): UnMonitor = new UnMonitor(serverId, tag.toString())
   }
 }
 
@@ -81,16 +88,26 @@ class Manager(implicit s:SendReceive) extends Actor {
     case UnMonitorServerListChange => serverListener -= sender
 
     case Monitor(serverId, tag) =>
-      servers.get(serverId) match {
-        case Some(s) =>
-          // Find corresponding KpiProvider
-          s.services.get(tag) match {
-            case Some(a) => a ! KpiMonitor(sender)
-            case None => sender ! NoSuchKpiProvider(tag)
-          }
+      sendMonitoringRequest(serverId, tag, KpiMonitor(sender))
 
-        case None => sender ! NoSuchServer(serverId)
-      }
+    case UnMonitor(serverId, tag) =>
+      sendMonitoringRequest(serverId, tag, KpiUnMonitor(sender))
+
+
+
+  }
+
+  def sendMonitoringRequest(serverId:Int, tag:String, message: Any): Unit = {
+    servers.get(serverId) match {
+      case Some(s) =>
+        // Find corresponding KpiProvider
+        s.services.get(tag) match {
+          case Some(a) => a ! message
+          case None => sender ! NoSuchKpiProvider(tag)
+        }
+
+      case None => sender ! NoSuchServer(serverId)
+    }
   }
 
   def broadcastServerListChange() = {
