@@ -1,30 +1,14 @@
 package com.frenchcoder.scalamones
 
-import com.frenchcoder.scalamones.service.Manager.{Monitor, AddServer}
-import com.frenchcoder.scalamones.service.{Manager, KpiProvider}
-import spray.httpx.unmarshalling._
 
-import scala.util.{Success, Failure}
-import scala.concurrent.duration._
-import akka.actor.{Props, ActorSystem}
-import akka.pattern.ask
+import akka.actor.{ActorSystem}
 import akka.event.Logging
-import akka.io.IO
-import spray.json.{JsonFormat, DefaultJsonProtocol}
-import spray.can.Http
-import spray.client.pipelining._
-import spray.util._
-import elastic.Stat._
-import elastic.ElasticJsonProtocol
-import spray.httpx.SprayJsonSupport
-
+import com.frenchcoder.scalamones.service.Manager
 import scalafx.application.JFXApp
 import scalafx.scene.Scene
-import scalafxml.core.macros.sfxml
-import scalafxml.core.{ExplicitDependencies, FXMLLoader, DependenciesByType, FXMLView}
+import scalafxml.core.{ExplicitDependencies, FXMLView}
 import scalafx.Includes._
-import scalafx.event.ActionEvent
-import javafx.{scene => jfxs}
+
 
 /**
  *
@@ -32,20 +16,11 @@ import javafx.{scene => jfxs}
 object Main extends JFXApp {
 
 
-  implicit val system = ActorSystem("simple-spray-client")
+  implicit val system = ActorSystem("scalamones")
 
   import system.dispatcher
   val log = Logging(system, getClass)
-
-
   val manager = system.actorOf(Manager.props)
-/*
-  manager ! AddServer("127.0.0.1", 9200)
-  manager ! Monitor[NodesStat](1)
-
-  */
-
-
 
   def dependencies = new ExplicitDependencies(Map("actorSystem" -> system, "manager" -> manager))
 
@@ -55,7 +30,7 @@ object Main extends JFXApp {
     scene = new Scene(
       FXMLView(getClass.getResource("/main.fxml"), dependencies)
     )
-    onCloseRequest = handle { println("Closing") }
+    onCloseRequest = handle { system.shutdown() }
 
   }
 
