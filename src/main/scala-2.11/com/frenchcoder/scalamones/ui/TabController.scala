@@ -39,11 +39,7 @@ class TabController(private val tab: Tab,
         clusterLabel.text = s"Cluster '${health.cluster_name}'"
         shardsLabel.text = s"${health.active_shards} / ${health.unassigned_shards + health.unassigned_shards}"
         clusterStatusShape.styleClass.clear
-        health.status match {
-          case "green" => clusterStatusShape.styleClass += "statusGreen"
-          case "yellow" => clusterStatusShape.styleClass += "statusYellow"
-          case "red" => clusterStatusShape.styleClass += "statusRed"
-        }
+        clusterStatusShape.styleClass += "status" + health.status.capitalize
       }
 
     }
