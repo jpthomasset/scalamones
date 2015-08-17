@@ -42,7 +42,7 @@ class MainController(private val serversMenu: Menu,
 
   def onAddServer(event: ActionEvent) = {
     statusLabel.text = "onAddServer"
-    uiactor ! AddServer("http://127.0.0.1", 9200)
+    uiactor ! AddServer("127.0.0.1", 9200)
   }
 
   def onServerAdded(server: Server) = {

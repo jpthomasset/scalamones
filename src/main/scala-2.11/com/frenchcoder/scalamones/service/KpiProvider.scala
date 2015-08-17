@@ -32,10 +32,14 @@ object KpiProvider {
   def nodeStatProps[T: JsonFormat](e: NodeStat => Option[T], path:String)(s:SendReceive, baseUrl: String): Props =
     Props(new KpiProvider[NodesStat, Map[String, Option[T]]](s, baseUrl + path, (n => n.nodes map ( m => (m._1, e(m._2)))) ))
 
+  def noEnvelopeStatProps[T: FromResponseUnmarshaller](path: String)(s:SendReceive, baseUrl: String): Props =
+    Props(new KpiProvider[T, T](s, baseUrl + path, (n => n) ))
+
   private[service]
   val serviceMap: Map[String, ((SendReceive, String) => Props)] = Map(
     classTag[NodeJvmStat].toString() -> nodeStatProps[NodeJvmStat](_.jvm, "/_nodes/stats/jvm"),
-    classTag[NodeOsStat].toString() -> nodeStatProps[NodeOsStat](_.os, "/_nodes/stats/os")
+    classTag[NodeOsStat].toString() -> nodeStatProps[NodeOsStat](_.os, "/_nodes/stats/os"),
+    classTag[ClusterHealth].toString() -> noEnvelopeStatProps[ClusterHealth]("/_cluster/health")
   )
 
 }

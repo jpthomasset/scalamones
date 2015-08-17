@@ -1,0 +1,19 @@
+.statusUnknown{
+    -fx-fill: linear-gradient(#fff, #e0e0e0);
+    -fx-stroke: #ccc;
+}
+
+.statusRed{
+    -fx-fill: linear-gradient(#d9534f, #c12e2a);
+    -fx-stroke: #b92c28;
+}
+
+.statusYellow{
+    -fx-fill: linear-gradient(#f0ad4e, #eb9316);
+    -fx-stroke: #e38d13;
+}
+
+.statusGreen{
+    -fx-fill: linear-gradient(#5cb85c,#419641);
+    -fx-stroke: #3e8f3e;
+}
