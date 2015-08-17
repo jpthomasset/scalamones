@@ -3,7 +3,7 @@ package com.frenchcoder.scalamones.ui
 import akka.actor.{Props, Actor, ActorRef, ActorSystem}
 import com.frenchcoder.scalamones.service.Server
 
-import scalafx.event.ActionEvent
+import scalafx.event.Event
 import scalafx.scene.control.Tab
 import scalafxml.core.macros.sfxml
 
@@ -23,11 +23,11 @@ class TabController(private val tab: Tab,
     }
   }
 
-  def onCloseRequest(event: ActionEvent): Unit = {
+  def onCloseRequest(event: Event): Unit = {
     println("TabController.OnCloseRequest")
   }
 
-  def onClosed(event: ActionEvent): Unit = {
+  def onClosed(event: Event): Unit = {
     println("TabController.OnClosed")
   }
 
