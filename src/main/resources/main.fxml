@@ -11,7 +11,7 @@
   <children>
     <MenuBar VBox.vgrow="NEVER">
          <menus>
-            <Menu mnemonicParsing="false" text="Servers">
+            <Menu mnemonicParsing="false" text="Servers" fx:id="serversMenu">
               <items>
                 <MenuItem mnemonicParsing="false" onAction="#onAddServer" text="Add" />
               </items>
