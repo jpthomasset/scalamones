@@ -11,14 +11,14 @@
   <children>
     <MenuBar VBox.vgrow="NEVER">
          <menus>
-            <Menu mnemonicParsing="false" text="Servers" fx:id="serversMenu">
+            <Menu fx:id="serversMenu" mnemonicParsing="false" text="Servers">
               <items>
                 <MenuItem mnemonicParsing="false" onAction="#onAddServer" text="Add" />
               </items>
             </Menu>
          </menus>
     </MenuBar>
-      <TabPane fx:id="tabPane" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS" />
+      <TabPane fx:id="tabPane" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="ALL_TABS" VBox.vgrow="ALWAYS" />
       <AnchorPane prefHeight="28.0" prefWidth="200.0">
          <children>
             <Label fx:id="statusLabel" text="status" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
