@@ -1,0 +1,26 @@
+.widget {
+    -fx-background-color: #fff;
+    -fx-border-color: #ddd;
+    -fx-border-radius: 4px;
+}
+
+.widget-header {
+    -fx-background-color: #f5f5f5;
+    -fx-pref-height:30px;
+    -fx-min-height:30px;
+    -fx-max-height:30px;
+}
+
+.widget-title {
+    -fx-pref-height:30px;
+    -fx-text-fill: #333;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-alignment: center;
+    -fx-padding: 0 5px;
+}
+
+.widget-content {
+    -fx-min-height: 100px;
+    -fx-background-color: #fff;
+}

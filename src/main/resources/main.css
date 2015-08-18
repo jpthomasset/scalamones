@@ -1,19 +1,54 @@
-.statusUnknown{
-    -fx-fill: linear-gradient(#fff, #e0e0e0);
-    -fx-stroke: #ccc;
+.tab-content {
+    -fx-background-color: #fff;
 }
 
-.statusRed{
+.status-unknown{
+    -fx-fill: linear-gradient(#ccc, #aaa);
+    -fx-stroke: #888;
+}
+
+.status-red{
     -fx-fill: linear-gradient(#d9534f, #c12e2a);
     -fx-stroke: #b92c28;
 }
 
-.statusYellow{
+.status-yellow{
     -fx-fill: linear-gradient(#f0ad4e, #eb9316);
     -fx-stroke: #e38d13;
 }
 
-.statusGreen{
+.status-green{
     -fx-fill: linear-gradient(#5cb85c,#419641);
     -fx-stroke: #3e8f3e;
+}
+
+.grid-widget-table {
+    -fx-background-color: #ddd;
+    -fx-hgap: 2;
+    -fx-vgap: 2;
+    -fx-border-width: 0 0 2 0;
+    -fx-border-color: #ddd;
+}
+
+.grid-widget-table Label {
+    -fx-padding: 3px 5px;
+    -fx-background-color: #fff;
+    -fx-max-width: Infinity;
+}
+
+.grid-widget-table HBox {
+    -fx-background-color: #fff;
+}
+
+.grid-widget-table .header {
+    -fx-font-weight: bold;
+}
+
+.grid-widget-table .value {
+    -fx-alignment: center-right;
+    -fx-font-style: italic;
+}
+
+.right {
+    -fx-alignment: center-right;
 }

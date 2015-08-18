@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<fx:root minWidth="300.0" styleClass="widget" stylesheets="@widget.css" type="javafx.scene.layout.VBox" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.45">
+    <Pane styleClass="widget-header">
+      <children>
+         <Label fx:id="titleLabel" styleClass="widget-title" text="Widget title" />
+      </children></Pane>
+   <StackPane fx:id="contentPane" styleClass="widget-content"/>
+</fx:root>

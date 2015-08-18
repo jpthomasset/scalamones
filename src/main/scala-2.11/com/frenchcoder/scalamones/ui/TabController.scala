@@ -14,9 +14,11 @@ import scalafxml.core.macros.sfxml
 
 @sfxml
 class TabController(private val tab: Tab,
-                    private val clusterLabel:Label,
-                    private val shardsLabel:Label,
+                    private val clusterNameLabel:Label,
                     private val clusterStatusShape: Circle,
+                    private val clusterStatusLabel: Label,
+                    private val clusterUptimeLabel:Label,
+                    private val clusterShardsLabel:Label,
                     private implicit val actorSystem: ActorSystem,
                     private val manager: ActorRef,
                     private val server: Server) {
@@ -36,10 +38,11 @@ class TabController(private val tab: Tab,
         context.stop(self)
 
       case KpiNotify(health:ClusterHealth) => Platform.runLater {
-        clusterLabel.text = s"Cluster '${health.cluster_name}'"
-        shardsLabel.text = s"${health.active_shards} / ${health.unassigned_shards + health.unassigned_shards}"
+        clusterNameLabel.text = health.cluster_name
+        clusterShardsLabel.text = s"${health.active_shards} / ${health.active_shards + health.unassigned_shards}"
         clusterStatusShape.styleClass.clear
-        clusterStatusShape.styleClass += "status" + health.status.capitalize
+        clusterStatusShape.styleClass += "status-" + health.status
+        clusterStatusLabel.text = health.status
       }
 
     }

@@ -12,7 +12,7 @@ addCompilerPlugin("org.scalamacros" % "paradise" % "2.0.1" cross CrossVersion.fu
 libraryDependencies += "org.scalafx" %% "scalafxml-core-sfx8" % "0.2.2"
 
 // Akka
-libraryDependencies += "com.typesafe.akka" % "akka-actor_2.11" % "2.3.12"
+libraryDependencies += "com.typesafe.akka" %% "akka-actor" % "2.3.12"
 libraryDependencies += "com.typesafe.akka" %% "akka-testkit" % "2.3.12"
 
 // Spray
@@ -23,6 +23,7 @@ libraryDependencies += "io.spray" %% "spray-json" % "1.3.2"
 libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.4" % "test"
 
 scalacOptions ++= Seq("-feature")
+scalacOptions += "-target:jvm-1.8"
 
 // Prevent startup bug in JavaFX
 fork := true

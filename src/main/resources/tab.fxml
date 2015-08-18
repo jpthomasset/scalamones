@@ -8,53 +8,56 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<?import com.frenchcoder.scalamones.java.ui.WidgetPane?>
+
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
 <Tab fx:id="tab" onCloseRequest="#onCloseRequest" onClosed="#onClosed" text="" xmlns="http://javafx.com/javafx/8.0.45" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frenchcoder.scalamones.ui.TabController">
   <content>
-    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-         <children>
-            <VBox layoutX="10.0" layoutY="10.0" prefHeight="500.0" prefWidth="800.0">
-               <children>
-                  <HBox prefWidth="200.0">
-                     <children>
-                        <Label fx:id="clusterLabel" text="Cluster '???'">
-                           <font>
-                              <Font name="DejaVu Sans Bold" size="25.0" />
-                           </font>
-                           <HBox.margin>
-                              <Insets right="10.0" />
-                           </HBox.margin>
-                        </Label>
-                        <Circle fx:id="clusterStatusShape" radius="15.0" strokeType="INSIDE" styleClass="statusUnknown">
-                           <fill>
-                              <LinearGradient endX="1.0" endY="1.0">
-                                 <stops>
-                                    <Stop color="#13ee0b" />
-                                    <Stop color="WHITE" offset="1.0" />
-                                 </stops>
-                              </LinearGradient>
-                           </fill>
-                        </Circle>
-                        <Label fx:id="shardsLabel" alignment="CENTER" prefHeight="25.0" prefWidth="150.0"  text="shards">
-                           <HBox.margin>
-                              <Insets left="30.0" />
-                           </HBox.margin>
-                        </Label>
-                     </children>
-                     <VBox.margin>
-                        <Insets />
-                     </VBox.margin>
-                     <padding>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                     </padding>
-                     <opaqueInsets>
-                        <Insets />
-                     </opaqueInsets>
-                  </HBox>
-               </children>
-               <padding>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-               </padding>
-            </VBox>
-         </children></AnchorPane>
+     <ScrollPane fitToHeight="true" fitToWidth="true">
+        <GridPane hgap="10" vgap="10" styleClass="tab-content">
+           <padding><Insets top="10" right="10" bottom="10" left="10"/>
+           </padding>
+           <WidgetPane GridPane.columnIndex="0" GridPane.rowIndex="0" title="Cluster">
+              <content>
+                  <VBox>
+                  <GridPane styleClass="grid-widget-table">
+                      <columnConstraints>
+                          <ColumnConstraints halignment="LEFT" percentWidth="50"></ColumnConstraints>
+                          <ColumnConstraints halignment="RIGHT" percentWidth="50"></ColumnConstraints>
+                      </columnConstraints>
+
+                      <Label text="Name" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="header"/>
+                      <Label fx:id="clusterNameLabel" GridPane.rowIndex="0" GridPane.columnIndex="1" styleClass="value"/>
+
+                      <Label text="Status" GridPane.rowIndex="1" GridPane.columnIndex="0" styleClass="header"/>
+                      <HBox GridPane.rowIndex="1" GridPane.columnIndex="1" styleClass="right">
+                        <Circle fx:id="clusterStatusShape" radius="10.0" strokeType="INSIDE" styleClass="status-unknown" />
+                        <Label fx:id="clusterStatusLabel" styleClass="value" />
+                      </HBox>
+
+                      <Label text="Uptime" GridPane.rowIndex="2" GridPane.columnIndex="0" styleClass="header"/>
+                      <Label fx:id="clusterUptimeLabel" GridPane.rowIndex="2" GridPane.columnIndex="1" styleClass="value"/>
+
+                      <Label text="Shards" GridPane.rowIndex="3" GridPane.columnIndex="0" styleClass="header"/>
+                      <Label fx:id="clusterShardsLabel" GridPane.rowIndex="3" GridPane.columnIndex="1" styleClass="value"/>
+                  </GridPane>
+                  </VBox>
+              </content>
+           </WidgetPane>
+           <WidgetPane GridPane.columnIndex="1" GridPane.rowIndex="0" title="CPU">
+               <LineChart fx:id="cpuGraph">
+                   <xAxis><NumberAxis /></xAxis>
+                   <yAxis><NumberAxis /></yAxis>
+               </LineChart>
+           </WidgetPane>
+           <WidgetPane GridPane.columnIndex="2" GridPane.rowIndex="0" title="Memory">
+
+           </WidgetPane>
+           <WidgetPane GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="3" title="Nodes Statistics">
+
+           </WidgetPane>
+        </GridPane>
+     </ScrollPane>
   </content>
 </Tab>
