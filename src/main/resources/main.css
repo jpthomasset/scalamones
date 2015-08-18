@@ -24,7 +24,7 @@
 
 .grid-widget-table {
     -fx-background-color: #ddd;
-    -fx-hgap: 2;
+    -fx-hgap: 0;
     -fx-vgap: 2;
     -fx-border-width: 0 0 2 0;
     -fx-border-color: #ddd;

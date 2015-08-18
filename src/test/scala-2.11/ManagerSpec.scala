@@ -4,6 +4,7 @@ import com.frenchcoder.scalamones.service.Manager
 import org.scalatest.WordSpecLike
 import org.scalatest.Matchers
 import org.scalatest.BeforeAndAfterAll
+import spray.http.Uri
 import scala.concurrent.ExecutionContext.Implicits.global
 import Manager._
 
@@ -20,17 +21,16 @@ with WordSpecLike with Matchers with BeforeAndAfterAll {
 
     "ack requester when server added" in {
       val manager = system.actorOf(Manager.props)
-      manager ! AddServer("es.example.com", 1234)
+      manager ! AddServer("http://es.example.com:1234")
 
       val addedMsg = expectMsgType[ServerAdded]
-      addedMsg.server.host should be("es.example.com")
-      addedMsg.server.port should be(1234)
+      addedMsg.server.url should be(Uri("http://es.example.com:1234"))
     }
 
     "ack requester when server removed" in {
       val manager = system.actorOf(Manager.props)
 
-      manager ! AddServer("es.example.com", 1234)
+      manager ! AddServer("http://es.example.com:1234")
       val addedMsg = expectMsgType[ServerAdded]
 
       manager ! RemoveServer(addedMsg.server.id)
@@ -44,11 +44,11 @@ with WordSpecLike with Matchers with BeforeAndAfterAll {
       val manager = system.actorOf(Manager.props)
       manager ! MonitorServerListChange
 
-      manager ! AddServer("es.example.com", 1234)
+      manager ! AddServer("http://es.example.com:1234")
 
       expectMsgType[ServerAdded]
 
-      val result1 = expectMsgType[ServerList].servers filter( s => s.host eq "es.example.com")
+      val result1 = expectMsgType[ServerList].servers filter( s => s.url eq Uri("http://es.example.com:1234"))
       result1.size should be(1)
 
     }

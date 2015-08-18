@@ -3,6 +3,7 @@ package com.frenchcoder.scalamones.ui
 import akka.actor.{Props, ActorRef, ActorSystem, Actor}
 import com.frenchcoder.scalamones.service.Manager.{ServerAdded, AddServer, ServerList, MonitorServerListChange}
 import com.frenchcoder.scalamones.service.Server
+import spray.http.Uri
 
 import scalafx.application.Platform
 import scalafx.event.ActionEvent
@@ -25,7 +26,7 @@ class MainController(private val serversMenu: Menu,
     manager ! MonitorServerListChange
     def receive = {
       case ServerList(servers) => Platform.runLater { onServerList(servers) }
-      case AddServer(host, port) => manager ! AddServer(host, port)
+      case AddServer(url) => manager ! AddServer(url)
       case ServerAdded(server) => Platform.runLater { onServerAdded(server) }
     }
   }
@@ -36,13 +37,24 @@ class MainController(private val serversMenu: Menu,
       serversMenu.items.remove(1, serversMenu.items.size)
     }
     serversMenu.items.add(new SeparatorMenuItem())
-    servers map { s => serversMenu.items.add(new MenuItem(s.host + ":" + s.port)) }
+    servers map { s => serversMenu.items.add(new MenuItem(s.url.toString())) }
 
   }
 
   def onAddServer(event: ActionEvent) = {
-    statusLabel.text = "onAddServer"
-    uiactor ! AddServer("127.0.0.1", 9200)
+    val dialog = new TextInputDialog(defaultValue = "http://127.0.0.1:9200") {
+      //initOwner(stage)
+      title = "Add a new server"
+      headerText = "Enter the url of the server to monitor,\nincluding protocol and port.\n\n(i.e.'http://127.0.0.1:9200)"
+      contentText = "Server URL:"
+    }
+
+    val result = dialog.showAndWait()
+
+    result match {
+      case Some(url) => uiactor ! AddServer(Uri(url))
+    }
+    //uiactor ! AddServer(Uri("http://127.0.0.1:9200"))
   }
 
   def onServerAdded(server: Server) = {

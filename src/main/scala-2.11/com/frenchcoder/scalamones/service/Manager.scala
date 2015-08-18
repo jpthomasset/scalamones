@@ -6,6 +6,7 @@ import com.frenchcoder.scalamones.service.KpiProvider.{KpiUnMonitor, KpiMonitor}
 import com.frenchcoder.scalamones.service.Manager._
 import Manager._
 import spray.client.pipelining._
+import spray.http.Uri
 import scala.concurrent.ExecutionContext
 import scala.reflect._
 
@@ -18,7 +19,7 @@ object Manager {
    * Message to add a server
    * @param host The host of the server to monitor
    * @param port The port of the server to monitorj */
-  case class AddServer(host: String, port: Int)
+  case class AddServer(url:Uri)
   case class ListServer()
   case class RemoveServer(serverId: Int)
 
@@ -60,9 +61,9 @@ class Manager(implicit s:SendReceive) extends Actor {
   var serverListener = Set.empty[ActorRef]
 
   def receive = {
-    case AddServer(host, port) =>
-      val serverService = KpiProvider.startServices("http://" + host + ":" + port)
-      val serverContext = ServerContext(Server(nextServerId, host, port), serverService)
+    case AddServer(url) =>
+      val serverService = KpiProvider.startServices(url)
+      val serverContext = ServerContext(Server(nextServerId, url), serverService)
 
       // Store services for future usage
       servers += (serverContext.server.id -> serverContext)

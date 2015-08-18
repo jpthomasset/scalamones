@@ -24,7 +24,7 @@ class TabController(private val tab: Tab,
                     private val server: Server) {
 
 
-  tab.text = server.host
+  tab.text = server.url.toString()
   val uiactor = actorSystem.actorOf(Props(new TabControllerActor()))
 
   case class Stop()
@@ -38,6 +38,7 @@ class TabController(private val tab: Tab,
         context.stop(self)
 
       case KpiNotify(health:ClusterHealth) => Platform.runLater {
+        tab.text = s"${health.cluster_name} [${server.url}]"
         clusterNameLabel.text = health.cluster_name
         clusterShardsLabel.text = s"${health.active_shards} / ${health.active_shards + health.unassigned_shards}"
         clusterStatusShape.styleClass.clear
