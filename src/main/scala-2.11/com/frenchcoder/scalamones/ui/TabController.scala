@@ -8,6 +8,7 @@ import com.frenchcoder.scalamones.service.Server
 
 import scalafx.application.Platform
 import scalafx.event.Event
+import scalafx.scene.chart.LineChart
 import scalafx.scene.control.{Label, Tab}
 import scalafx.scene.shape.Circle
 import scalafxml.core.macros.sfxml
@@ -19,6 +20,8 @@ class TabController(private val tab: Tab,
                     private val clusterStatusLabel: Label,
                     private val clusterUptimeLabel:Label,
                     private val clusterShardsLabel:Label,
+                    private val cpuGraph: LineChart,
+                    private val memGraph: LineChart,
                     private implicit val actorSystem: ActorSystem,
                     private val manager: ActorRef,
                     private val server: Server) {
@@ -31,6 +34,7 @@ class TabController(private val tab: Tab,
 
   class TabControllerActor extends Actor {
 
+    // Start monitoring server
     manager ! Monitor[ClusterHealth](server.id)
     def receive = {
       case Stop =>

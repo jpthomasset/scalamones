@@ -46,13 +46,20 @@
               </content>
            </WidgetPane>
            <WidgetPane GridPane.columnIndex="1" GridPane.rowIndex="0" title="CPU">
-               <LineChart fx:id="cpuGraph">
-                   <xAxis><NumberAxis /></xAxis>
-                   <yAxis><NumberAxis /></yAxis>
-               </LineChart>
+               <content>
+                   <LineChart fx:id="cpuGraph" maxHeight="100">
+                       <xAxis><NumberAxis side="BOTTOM"/></xAxis>
+                       <yAxis><NumberAxis side="LEFT"/></yAxis>
+                   </LineChart>
+               </content>
            </WidgetPane>
            <WidgetPane GridPane.columnIndex="2" GridPane.rowIndex="0" title="Memory">
-
+               <content>
+                   <LineChart fx:id="memGraph" maxHeight="100">
+                       <xAxis><NumberAxis side="BOTTOM"/></xAxis>
+                       <yAxis><NumberAxis side="LEFT"/></yAxis>
+                   </LineChart>
+               </content>
            </WidgetPane>
            <WidgetPane GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="3" title="Nodes Statistics">
 
