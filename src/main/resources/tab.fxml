@@ -49,7 +49,7 @@
                <content>
                    <LineChart fx:id="cpuGraph" maxHeight="100">
                        <xAxis><NumberAxis side="BOTTOM"/></xAxis>
-                       <yAxis><NumberAxis side="LEFT"/></yAxis>
+                       <yAxis><NumberAxis side="LEFT" lowerBound="0" upperBound="100"/></yAxis>
                    </LineChart>
                </content>
            </WidgetPane>

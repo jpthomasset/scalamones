@@ -21,6 +21,8 @@ class MainController(private val serversMenu: Menu,
 
   val uiactor = actorSystem.actorOf(Props(new MainControllerActor()))
 
+  Platform.runLater { onAddServer(null) }
+
   // embedded actor
   class MainControllerActor extends Actor {
     manager ! MonitorServerListChange
@@ -53,6 +55,7 @@ class MainController(private val serversMenu: Menu,
 
     result match {
       case Some(url) => uiactor ! AddServer(Uri(url))
+      case None =>
     }
     //uiactor ! AddServer(Uri("http://127.0.0.1:9200"))
   }

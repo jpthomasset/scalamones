@@ -52,7 +52,3 @@
 .right {
     -fx-alignment: center-right;
 }
-
-LineChart {
-    -fx-background-color: #fab;
-}
