@@ -35,7 +35,7 @@ class TabController(private val tab: Tab,
   class TabControllerActor extends Actor {
 
     // Start monitoring server
-    manager ! Monitor[ClusterHealth](server.id)
+    // manager ! Monitor[ClusterHealth](server.id)
     def receive = {
       case Stop =>
         manager ! UnMonitor[ClusterHealth](server.id)

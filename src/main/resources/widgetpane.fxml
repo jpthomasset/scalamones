@@ -6,7 +6,7 @@
 
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
-<fx:root minWidth="300.0" styleClass="widget" stylesheets="@widget.css" type="javafx.scene.layout.VBox" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.45">
+<fx:root minWidth="300.0" styleClass="widget" stylesheets="@widgetpane.css" type="javafx.scene.layout.VBox" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.45">
     <GridPane styleClass="widget-header">
          <columnConstraints>
              <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES"></ColumnConstraints>
