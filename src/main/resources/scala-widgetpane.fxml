@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<fx:root minWidth="300.0" styleClass="widget" stylesheets="@widget.css" type="javafx.scene.layout.VBox" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.45">
+    <GridPane styleClass="widget-header">
+         <columnConstraints>
+             <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES"></ColumnConstraints>
+             <ColumnConstraints halignment="RIGHT"></ColumnConstraints>
+         </columnConstraints>
+         <Label fx:id="titleLabel" styleClass="widget-title" text="Widget title" />
+          <HBox GridPane.columnIndex="1" spacing="3">
+              <Button>
+                  <graphic>
+                      <ImageView>
+                          <Image url="@/ico/minimize.png"/>
+                      </ImageView>
+                  </graphic>
+              </Button>
+             <Button>
+                 <graphic>
+                     <ImageView>
+                         <Image url="@/ico/maximize.png"/>
+                     </ImageView>
+                 </graphic>
+             </Button>
+              <Button>
+                  <graphic>
+                      <ImageView>
+                          <Image url="@/ico/close.png"/>
+                      </ImageView>
+                  </graphic>
+              </Button>
+          </HBox>
+    </GridPane>
+   <StackPane fx:id="contentPane" styleClass="widget-content"/>
+</fx:root>

@@ -12,6 +12,7 @@
 
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
+<?import com.frenchcoder.scalamones.ui.TestVBox?>
 <Tab fx:id="tab" onCloseRequest="#onCloseRequest" onClosed="#onClosed" text="" xmlns="http://javafx.com/javafx/8.0.45" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frenchcoder.scalamones.ui.TabController">
   <content>
      <ScrollPane fitToHeight="true" fitToWidth="true">
@@ -64,6 +65,9 @@
            <WidgetPane GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="3" title="Nodes Statistics">
 
            </WidgetPane>
+            <TestVBox GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.columnSpan="3" >
+                <content><Label text="Test"></Label></content>
+            </TestVBox>
         </GridPane>
      </ScrollPane>
   </content>
