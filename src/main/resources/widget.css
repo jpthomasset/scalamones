@@ -24,3 +24,12 @@
     -fx-min-height: 100px;
     -fx-background-color: #fff;
 }
+
+.widget-header Button {
+    /*-fx-background-insets:0;*/
+    -fx-padding:1 2;
+}
+
+.widget-header HBox {
+    -fx-padding: 2 2 0 0;
+}
