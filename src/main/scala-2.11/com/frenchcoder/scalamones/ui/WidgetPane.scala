@@ -1,10 +1,8 @@
 package com.frenchcoder.scalamones.ui
 
-import javafx.beans.property.{ObjectPropertyBase, StringProperty, ObjectProperty}
-import javafx.collections.ObservableList
+import javafx.beans.property.StringProperty
 import javafx.event.{ActionEvent, EventHandler, Event, EventType}
 import javafx.fxml.FXML
-import javafx.scene.Node
 import javafx.scene.control.Label
 import javafx.scene.layout.{StackPane, VBox}
 
