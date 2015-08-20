@@ -10,6 +10,7 @@
     <Pane styleClass="widget-header">
       <children>
          <Label fx:id="titleLabel" styleClass="widget-title" text="Widget title" />
+
       </children></Pane>
    <StackPane fx:id="contentPane" styleClass="widget-content"/>
 </fx:root>
