@@ -17,21 +17,21 @@
               <Button>
                   <graphic>
                       <ImageView>
-                          <Image url="@/ico/minimize-window-16.png"/>
+                          <Image url="@/ico/minimize.png"/>
                       </ImageView>
                   </graphic>
               </Button>
              <Button>
                  <graphic>
                      <ImageView>
-                         <Image url="@/ico/maximize-window-16.png"/>
+                         <Image url="@/ico/maximize.png"/>
                      </ImageView>
                  </graphic>
              </Button>
               <Button>
                   <graphic>
                       <ImageView>
-                          <Image url="@/ico/x-mark-16.png"/>
+                          <Image url="@/ico/close.png"/>
                       </ImageView>
                   </graphic>
               </Button>
