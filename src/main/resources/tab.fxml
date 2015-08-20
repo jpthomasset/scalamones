@@ -18,7 +18,7 @@
         <GridPane hgap="10" vgap="10" styleClass="tab-content">
            <padding><Insets top="10" right="10" bottom="10" left="10"/>
            </padding>
-           <WidgetPane GridPane.columnIndex="0" GridPane.rowIndex="0" title="Cluster">
+           <WidgetPane GridPane.columnIndex="0" GridPane.rowIndex="0" title="Cluster" onCloseRequest="#test">
               <content>
                   <VBox>
                   <GridPane styleClass="grid-widget-table">

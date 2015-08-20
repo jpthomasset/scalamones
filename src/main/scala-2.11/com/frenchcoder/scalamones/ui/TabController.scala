@@ -61,4 +61,8 @@ class TabController(private val tab: Tab,
     uiactor ! Stop
   }
 
+  def test(event: Event): Unit = {
+    println("Widget CLOSE !! ")
+  }
+
 }

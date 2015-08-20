@@ -14,21 +14,21 @@
          </columnConstraints>
          <Label fx:id="titleLabel" styleClass="widget-title" text="Widget title" />
           <HBox GridPane.columnIndex="1" spacing="3">
-              <Button>
+              <Button onAction="#minimize">
                   <graphic>
                       <ImageView>
                           <Image url="@/ico/minimize.png"/>
                       </ImageView>
                   </graphic>
               </Button>
-             <Button>
+             <Button onAction="#maximize">
                  <graphic>
                      <ImageView>
                          <Image url="@/ico/maximize.png"/>
                      </ImageView>
                  </graphic>
              </Button>
-              <Button>
+              <Button onAction="#close">
                   <graphic>
                       <ImageView>
                           <Image url="@/ico/close.png"/>
