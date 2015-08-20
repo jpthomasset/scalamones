@@ -1,6 +1,7 @@
 package com.frenchcoder.scalamones.service
 
 import akka.actor._
+import akka.event.Logging
 import com.frenchcoder.scalamones.elastic.Stat.ElasticKpi
 import com.frenchcoder.scalamones.service.KpiProvider.{KpiUnMonitor, KpiMonitor}
 import com.frenchcoder.scalamones.service.Manager._
@@ -11,6 +12,13 @@ import scala.concurrent.ExecutionContext
 import scala.reflect._
 
 object Manager {
+
+  implicit val system = ActorSystem("scalamones")
+
+  import system.dispatcher
+  val log = Logging(system, getClass)
+  val actor = system.actorOf(props)
+
   def props(implicit refFactory: ActorRefFactory, executionContext: ExecutionContext) :Props =  {
     implicit val s = sendReceive
     Props(new Manager)

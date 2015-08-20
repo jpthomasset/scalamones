@@ -2,33 +2,31 @@ package com.frenchcoder.scalamones.ui
 
 import akka.actor.{Props, ActorRef, ActorSystem, Actor}
 import com.frenchcoder.scalamones.service.Manager.{ServerAdded, AddServer, ServerList, MonitorServerListChange}
-import com.frenchcoder.scalamones.service.Server
+import com.frenchcoder.scalamones.service.{Manager, Server}
 import spray.http.Uri
 
 import scalafx.application.Platform
 import scalafx.event.ActionEvent
 import scalafx.scene.control._
-import scalafxml.core.{FXMLLoader, ExplicitDependencies, FXMLView}
+import scalafxml.core.{NoDependencyResolver, FXMLLoader, ExplicitDependencies, FXMLView}
 import scalafxml.core.macros.sfxml
 import scalafx.Includes._
 
 @sfxml
 class MainController(private val serversMenu: Menu,
                       private val statusLabel: Label,
-                      private val tabPane: TabPane,
-                      private implicit val actorSystem: ActorSystem,
-                      private val manager: ActorRef) {
+                      private val tabPane: TabPane) {
 
-  val uiactor = actorSystem.actorOf(Props(new MainControllerActor()))
+  val uiactor = Manager.system.actorOf(Props(new MainControllerActor()))
 
   Platform.runLater { onAddServer(null) }
 
   // embedded actor
   class MainControllerActor extends Actor {
-    manager ! MonitorServerListChange
+    Manager.actor ! MonitorServerListChange
     def receive = {
       case ServerList(servers) => Platform.runLater { onServerList(servers) }
-      case AddServer(url) => manager ! AddServer(url)
+      case AddServer(url) => Manager.actor ! AddServer(url)
       case ServerAdded(server) => Platform.runLater { onServerAdded(server) }
     }
   }
@@ -62,11 +60,8 @@ class MainController(private val serversMenu: Menu,
 
   def onServerAdded(server: Server) = {
     def dependencies = new ExplicitDependencies(Map(
-      "actorSystem" -> actorSystem,
-      "manager" -> manager,
       "server" -> server))
-    val loader = new FXMLLoader(getClass.getResource("/tab.fxml"), dependencies)
-    val tab: javafx.scene.control.Tab = loader.load()
-    tabPane.tabs.add(tab)
+
+    tabPane.tabs.add(new TabController(server))
   }
 }

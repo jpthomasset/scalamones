@@ -2,11 +2,9 @@ package com.frenchcoder.scalamones.ui
 
 import javafx.beans.property.StringProperty
 import javafx.event.{ActionEvent, EventHandler, Event, EventType}
-import javafx.fxml.FXML
+import javafx.fxml.{FXMLLoader, FXML}
 import javafx.scene.control.Label
 import javafx.scene.layout.{StackPane, VBox}
-
-import scalafxml.core.{NoDependencyResolver, FXMLLoader}
 
 object WidgetPane {
   /* Event Handling */
@@ -23,7 +21,7 @@ class WidgetPane extends VBox {
   @FXML private var contentPane: StackPane = null;
   @FXML private var titleLabel: Label = null
 
-  val loader = new FXMLLoader(getClass.getResource("/widgetpane.fxml"), NoDependencyResolver)
+  val loader = new FXMLLoader(getClass.getResource("/widgetpane.fxml"))
   loader.setRoot(this);
   loader.setController(this);
   loader.load();
@@ -60,6 +58,5 @@ class WidgetPane extends VBox {
   }
 
   def setBasicEventHandler(et: EventType[Event], eh: EventHandler[Event]) = setEventHandler(et, eh)
-
 }
 

@@ -13,7 +13,7 @@
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
 
-<Tab fx:id="tab" onCloseRequest="#onCloseRequest" onClosed="#onClosed" text="" xmlns="http://javafx.com/javafx/8.0.45" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frenchcoder.scalamones.ui.TabController">
+<fx:root fx:id="tab" onCloseRequest="#onCloseRequest" onClosed="#onClosed" type="javafx.scene.control.Tab"  text="" xmlns="http://javafx.com/javafx/8.0.45" xmlns:fx="http://javafx.com/fxml/1">
   <content>
      <ScrollPane fitToHeight="true" fitToWidth="true">
         <GridPane hgap="10" vgap="10" styleClass="tab-content">
@@ -67,4 +67,4 @@
          </GridPane>
      </ScrollPane>
   </content>
-</Tab>
+</fx:root>
