@@ -20,7 +20,7 @@ import java.io.IOException;
 /**
  *
  */
-public class WidgetPane extends VBox {
+public class WidgetPane extends VBox implements EventProducerInterface {
     @FXML private StackPane contentPane;
     @FXML private Label titleLabel;
 
@@ -61,19 +61,7 @@ public class WidgetPane extends VBox {
 
     public ObjectProperty<EventHandler<Event>> onCloseRequestProperty() {
         if(onCloseRequest == null) {
-            onCloseRequest = new ObjectPropertyBase<EventHandler<Event>>() {
-                protected void invalidated() {
-                    WidgetPane.this.setEventHandler(WidgetPane.CLOSE_REQUEST_EVENT, (EventHandler) this.get());
-                }
-
-                public Object getBean() {
-                    return WidgetPane.this;
-                }
-
-                public String getName() {
-                    return "onCloseRequest";
-                }
-            };
+            onCloseRequest = new EventHandlerProperty(this, "onCloseRequest");
         }
         return onCloseRequest;
     }
@@ -86,19 +74,7 @@ public class WidgetPane extends VBox {
 
     public ObjectProperty<EventHandler<Event>> onMinimizeRequestProperty() {
         if(onMinimizeRequest == null) {
-            onMinimizeRequest = new ObjectPropertyBase<EventHandler<Event>>() {
-                protected void invalidated() {
-                    WidgetPane.this.setEventHandler(WidgetPane.MINIMIZE_REQUEST_EVENT, (EventHandler) this.get());
-                }
-
-                public Object getBean() {
-                    return WidgetPane.this;
-                }
-
-                public String getName() {
-                    return "onMinimizeRequest";
-                }
-            };
+            onMinimizeRequest = new EventHandlerProperty(this, "onMinimizeRequest");
         }
         return onMinimizeRequest;
     }
@@ -111,19 +87,7 @@ public class WidgetPane extends VBox {
 
     public ObjectProperty<EventHandler<Event>> onMaximizeRequestProperty() {
         if(onMaximizeRequest == null) {
-            onMaximizeRequest = new ObjectPropertyBase<EventHandler<Event>>() {
-                protected void invalidated() {
-                    WidgetPane.this.setEventHandler(WidgetPane.MAXIMIZE_REQUEST_EVENT, (EventHandler) this.get());
-                }
-
-                public Object getBean() {
-                    return WidgetPane.this;
-                }
-
-                public String getName() {
-                    return "onMaximizeRequest";
-                }
-            };
+            onMaximizeRequest = new EventHandlerProperty(this, "onMaximizeRequest");
         }
         return onMaximizeRequest;
     }
@@ -150,5 +114,9 @@ public class WidgetPane extends VBox {
     protected void close(ActionEvent event) {
         event.consume();
         Event.fireEvent(this, new Event(CLOSE_REQUEST_EVENT));
+    }
+
+    public void setBasicEventHandler(EventType<Event> eventType, EventHandler<Event> eventHandler) {
+        super.setEventHandler(eventType, eventHandler);
     }
 }
