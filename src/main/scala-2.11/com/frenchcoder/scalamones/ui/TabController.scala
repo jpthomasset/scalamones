@@ -31,7 +31,7 @@ class TabController extends Tab {
     text = server.url.toString()
 
     val loader = new FXMLLoader(getClass.getResource("/tab.fxml"))
-    loader.setRoot(this.delegate);
+    loader.setRoot(this);
     loader.setController(this);
     loader.load();
   }
