@@ -73,7 +73,7 @@ class TabController extends Tab {
   }
 
   @FXML
-  def test(event: Event): Unit = {
+  def test(): Unit = {
     println("Widget CLOSE !! ")
   }
 
