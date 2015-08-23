@@ -1,8 +1,10 @@
 package com.frenchcoder.scalamones.ui
 
+import javafx.beans.DefaultProperty
 import javafx.beans.property.StringProperty
 import javafx.event.{ActionEvent, EventHandler, Event, EventType}
 import javafx.fxml.{FXMLLoader, FXML}
+import javafx.scene.Node
 import javafx.scene.control.Label
 import javafx.scene.layout.{StackPane, VBox}
 
@@ -35,6 +37,7 @@ class WidgetPane extends VBox {
   def titleProperty: StringProperty = titleLabel.textProperty
 
   def getContent() = contentPane.getChildren
+  def setContent(nodes:Node*) {contentPane.getChildren.addAll(nodes:_*) }
 
   def onCloseRequestProperty = onCloseRequest
   def getOnCloseRequest = onCloseRequestProperty.get()

@@ -15,8 +15,8 @@
 <?import javafx.scene.chart.NumberAxis?>
 
 <fx:root fx:id="tab" onCloseRequest="#onCloseRequest" onClosed="#onClosed" type="TabController"  text="" xmlns="http://javafx.com/javafx/8.0.45" xmlns:fx="http://javafx.com/fxml/1">
-    <content>
      <ScrollPane fitToHeight="true" fitToWidth="true">
+         <children>
         <GridPane hgap="10" vgap="10" styleClass="tab-content">
            <padding><Insets top="10" right="10" bottom="10" left="10"/>
            </padding>
@@ -66,6 +66,6 @@
            <WidgetPane GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="3" title="Nodes Statistics">
            </WidgetPane>
          </GridPane>
+         </children>
      </ScrollPane>
-    </content>
 </fx:root>
