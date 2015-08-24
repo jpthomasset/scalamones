@@ -20,43 +20,19 @@ import scalafx.Includes._
 @sfxml
 class TabController(private val tab: Tab,
                     private val container:GridPane,
-                    private implicit val actorSystem: ActorSystem,
-                    private val manager: ActorRef,
-                    private val server: Server) {
+                    implicit val actorSystem: ActorSystem,
+                    implicit val manager: ActorRef,
+                    implicit val server: Server) {
 
 
   tab.text = server.url.toString()
 
-  loadFxmlWidget("Cluster", "/cluster-widget.fxml", 0, 0, 1, 1)
+  val n = ClusterWidgetLoader.load("Cluster")
+  container.add(n.widgetPane, 0, 0, 1, 1)
+  /*loadFxmlWidget("Cluster", "/cluster-widget.fxml", 0, 0, 1, 1)
   loadFxmlWidget("CPU", "/graph-widget.fxml", 1, 0, 1, 1)
   loadFxmlWidget("Memory", "/graph-widget.fxml", 2, 0, 1, 1)
-
-
-  def loadFxmlWidget(title: String, fxmlPath: String, col: Int, row: Int, colspan:Int, rowspan:Int): Unit = {
-    def dependencies = new ExplicitDependencies(Map(
-      "actorSystem" -> actorSystem,
-      "manager" -> manager,
-      "server" -> server))
-    val loader = new FXMLLoader(getClass.getResource(fxmlPath), dependencies)
-    val widgetContent: javafx.scene.Node = loader.load()
-    val controller:WidgetContent = loader.getController()
-
-    addWidget(title, widgetContent, controller, col, row, colspan, rowspan)
-  }
-
-  def addWidget(title: String, content: javafx.scene.Node, controller: WidgetContent, col: Int, row: Int, colspan:Int, rowspan:Int): Unit = {
-    val widget:WidgetPane = new WidgetPane {
-      titleProperty() = title
-      getContent().add(content)
-      onCloseRequestProperty() = { (event:Event) =>
-        controller.close()
-        container.getChildren().remove(this)
-      }
-    }
-
-    container.add(widget, col, row, colspan, rowspan)
-  }
-
+*/
 
   def onCloseRequest(event: Event): Unit = {
     println("TabController.OnCloseRequest")
