@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<VBox fx:id="vbox" xmlns="http://javafx.com/javafx/8.0.45" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frenchcoder.scalamones.ui.ClusterWidget">
+    <children>
+        <GridPane styleClass="grid-widget-table">
+            <columnConstraints>
+                <ColumnConstraints halignment="LEFT" percentWidth="50"></ColumnConstraints>
+                <ColumnConstraints halignment="RIGHT" percentWidth="50"></ColumnConstraints>
+            </columnConstraints>
+
+            <Label text="Name" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="header"/>
+            <Label fx:id="clusterNameLabel" GridPane.rowIndex="0" GridPane.columnIndex="1" styleClass="value"/>
+
+            <Label text="Status" GridPane.rowIndex="1" GridPane.columnIndex="0" styleClass="header"/>
+            <HBox GridPane.rowIndex="1" GridPane.columnIndex="1" styleClass="right">
+                <Circle fx:id="clusterStatusShape" radius="10.0" strokeType="INSIDE" styleClass="status-unknown" />
+                <Label fx:id="clusterStatusLabel" styleClass="value" />
+            </HBox>
+
+            <Label text="Uptime" GridPane.rowIndex="2" GridPane.columnIndex="0" styleClass="header"/>
+            <Label fx:id="clusterUptimeLabel" GridPane.rowIndex="2" GridPane.columnIndex="1" styleClass="value"/>
+
+            <Label text="Shards" GridPane.rowIndex="3" GridPane.columnIndex="0" styleClass="header"/>
+            <Label fx:id="clusterShardsLabel" GridPane.rowIndex="3" GridPane.columnIndex="1" styleClass="value"/>
+        </GridPane>
+    </children>
+</VBox>
