@@ -19,15 +19,17 @@ class TabController(private val tab: Tab,
   tab.text = server.url.toString()
 
   addWidget(ClusterWidgetLoader.load, 0, 0, 1, 1)
+  addWidget(CpuWidgetLoader.load, 1, 0, 1, 1)
+  addWidget(RamWidgetLoader.load, 2, 0, 1, 1)
 
   /*loadFxmlWidget("Cluster", "/cluster-widget.fxml", 0, 0, 1, 1)
   loadFxmlWidget("CPU", "/graph-widget.fxml", 1, 0, 1, 1)
   loadFxmlWidget("Memory", "/graph-widget.fxml", 2, 0, 1, 1)
 */
 
-  def addWidget(w: WidgetContent, row:Int, col:Int, rowspan:Int, colspan:Int): Unit = {
+  def addWidget(w: WidgetContent, col:Int, row:Int, colspan:Int, rowspan:Int): Unit = {
     w.widgetPane.onCloseRequestProperty() = (e:Event) => {container.children.remove(w.widgetPane)}
-    container.add(w.widgetPane, row, col, rowspan, colspan)
+    container.add(w.widgetPane, col, row, colspan, rowspan)
   }
   def onCloseRequest(event: Event): Unit = {
     println("TabController.OnCloseRequest")

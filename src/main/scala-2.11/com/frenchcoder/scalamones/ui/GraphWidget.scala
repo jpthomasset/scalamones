@@ -9,8 +9,12 @@ import scalafx.scene.chart.LineChart
 import scalafxml.core.{FXMLLoader, ExplicitDependencies}
 import scalafxml.core.macros.sfxml
 
-object GraphWidgetLoader extends WidgetLoader {
-  def load(implicit actorSystem: ActorSystem, manager: ActorRef, server: Server): WidgetContent  = loadFxml("/graph-widget.fxml")
+object CpuWidgetLoader extends WidgetLoader {
+  def load(implicit actorSystem: ActorSystem, manager: ActorRef, server: Server): WidgetContent  = loadFxml("CPU", "/graph-widget.fxml")
+}
+
+object RamWidgetLoader extends WidgetLoader {
+  def load(implicit actorSystem: ActorSystem, manager: ActorRef, server: Server): WidgetContent  = loadFxml("Memory", "/graph-widget.fxml")
 }
 
 @sfxml

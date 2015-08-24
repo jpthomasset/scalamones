@@ -17,10 +17,10 @@ trait WidgetContent {
 trait WidgetLoader {
   def load(implicit actorSystem: ActorSystem, manager: ActorRef, server: Server) : WidgetContent
 
-  protected def loadFxml(fxmlPath:String)(implicit actorSystem: ActorSystem, manager: ActorRef, server: Server): WidgetContent = {
+  protected def loadFxml(title: String, fxmlPath: String)(implicit actorSystem: ActorSystem, manager: ActorRef, server: Server): WidgetContent = {
 
     val widget:WidgetPane = new WidgetPane()
-    widget.setTitle("Cluster")
+    widget.setTitle(title)
 
     def dependencies = new ExplicitDependencies(Map(
       "actorSystem" -> actorSystem,

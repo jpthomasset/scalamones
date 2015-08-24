@@ -14,7 +14,7 @@ import scalafxml.core.{ExplicitDependencies, FXMLLoader}
 import scalafxml.core.macros.sfxml
 
 object ClusterWidgetLoader extends WidgetLoader {
-  def load(implicit actorSystem: ActorSystem, manager: ActorRef, server: Server): WidgetContent = loadFxml("/cluster-widget.fxml")
+  def load(implicit actorSystem: ActorSystem, manager: ActorRef, server: Server): WidgetContent = loadFxml("Cluster", "/cluster-widget.fxml")
 
 }
 
