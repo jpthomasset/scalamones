@@ -14,24 +14,8 @@ import scalafxml.core.{ExplicitDependencies, FXMLLoader}
 import scalafxml.core.macros.sfxml
 
 object ClusterWidgetLoader extends WidgetLoader {
-  def load(title: String)(implicit actorSystem: ActorSystem, manager: ActorRef, server: Server): WidgetContent = {
+  def load(implicit actorSystem: ActorSystem, manager: ActorRef, server: Server): WidgetContent = loadFxml("/cluster-widget.fxml")
 
-    val widget:WidgetPane = new WidgetPane()
-    widget.setTitle(title)
-
-    def dependencies = new ExplicitDependencies(Map(
-      "actorSystem" -> actorSystem,
-      "manager" -> manager,
-      "server" -> server,
-      "widgetPane" -> widget))
-
-    val loader = new FXMLLoader(getClass.getResource("/cluster-widget.fxml"), dependencies)
-    val widgetContent: javafx.scene.Node = loader.load()
-
-    widget.getContent().add(widgetContent)
-
-    loader.getController()
-  }
 }
 
 @sfxml
