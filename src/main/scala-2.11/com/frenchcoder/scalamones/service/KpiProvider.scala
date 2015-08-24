@@ -2,6 +2,7 @@ package com.frenchcoder.scalamones.service
 
 import akka.actor._
 import akka.event.Logging
+import com.frenchcoder.scalamones.elastic.ClusterStat._
 import com.frenchcoder.scalamones.elastic.ElasticJsonProtocol
 import com.frenchcoder.scalamones.elastic.Stat._
 import com.frenchcoder.scalamones.service.KpiProvider.{KpiNotify, KpiUnMonitor, KpiMonitor}
@@ -36,11 +37,13 @@ object KpiProvider {
   def noEnvelopeStatProps[T: FromResponseUnmarshaller](path: String)(s:SendReceive, baseUrl: Uri): Props =
     Props(new KpiProvider[T, T](s, baseUrl + path, (n => n) ))
 
+  import ClusterStatProtocol._
   private[service]
   val serviceMap: Map[String, ((SendReceive, Uri) => Props)] = Map(
     classTag[NodeJvmStat].toString() -> nodeStatProps[NodeJvmStat](_.jvm, "/_nodes/stats/jvm"),
     classTag[NodeOsStat].toString() -> nodeStatProps[NodeOsStat](_.os, "/_nodes/stats/os"),
-    classTag[ClusterHealth].toString() -> noEnvelopeStatProps[ClusterHealth]("/_cluster/health")
+    classTag[ClusterHealth].toString() -> noEnvelopeStatProps[ClusterHealth]("/_cluster/health"),
+    classTag[ClusterStat].toString() -> noEnvelopeStatProps[ClusterStat]("/_cluster/stats")
   )
 
 }
