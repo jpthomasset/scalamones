@@ -4,7 +4,7 @@
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.chart.CategoryAxis?>
 
-<LineChart fx:id="graph" maxHeight="100" xmlns="http://javafx.com/javafx/8.0.45" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frenchcoder.scalamones.ui.GraphWidget">
-   <xAxis><CategoryAxis side="BOTTOM"/></xAxis>
+<LineChart fx:id="graph" maxHeight="100" xmlns="http://javafx.com/javafx/8.0.45" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frenchcoder.scalamones.ui.GraphWidget" animated="false">
+   <xAxis><CategoryAxis side="BOTTOM" gapStartAndEnd="false" endMargin="0" startMargin="0"/></xAxis>
    <yAxis><NumberAxis side="LEFT" lowerBound="0" upperBound="100"/></yAxis>
 </LineChart>

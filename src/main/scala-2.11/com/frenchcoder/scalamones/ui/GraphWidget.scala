@@ -54,6 +54,7 @@ class GraphWidget(private val graph:LineChart[String, Number],
         context.stop(self)
       case KpiNotify(stat: ClusterStat) => Platform.runLater {
         println("CPU : " + stat.nodes.process.cpu.percent)
+        if(series.getData().size() > 10) series.getData().remove(0)
         series.getData().add(Data[String, Number](dateFormat.format(new Date(stat.timestamp)), stat.nodes.process.cpu.percent))
 
       }
