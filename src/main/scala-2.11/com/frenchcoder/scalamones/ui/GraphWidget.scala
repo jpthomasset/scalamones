@@ -19,15 +19,16 @@ import scalafxml.core.{FXMLLoader, ExplicitDependencies}
 import scalafxml.core.macros.sfxml
 
 object CpuWidgetLoader extends WidgetLoader {
-  def load(implicit actorSystem: ActorSystem, manager: ActorRef, server: Server): WidgetContent  = loadFxml("CPU", "/graph-widget.fxml")
+  def load(implicit actorSystem: ActorSystem, manager: ActorRef, server: Server): WidgetContent  = loadFxml("CPU", "/graph-widget.fxml", Map("extractor" -> ((e:ClusterStat) => e.nodes.process.cpu.percent)))
 }
 
 object RamWidgetLoader extends WidgetLoader {
-  def load(implicit actorSystem: ActorSystem, manager: ActorRef, server: Server): WidgetContent  = loadFxml("Memory", "/graph-widget.fxml")
+  def load(implicit actorSystem: ActorSystem, manager: ActorRef, server: Server): WidgetContent  = loadFxml("Memory", "/graph-widget.fxml", Map("extractor" -> ((e:ClusterStat) => e.nodes.jvm.mem.heap_used_in_bytes)))
 }
 
 @sfxml
-class GraphWidget(private val graph:LineChart[String, Number],
+class GraphWidget(private val graph:LineChart[Number, Number],
+                  private val extractor: (ClusterStat) => Number,
                   private val actorSystem: ActorSystem,
                   private val manager: ActorRef,
                   private val server: Server,
@@ -35,7 +36,7 @@ class GraphWidget(private val graph:LineChart[String, Number],
 
 
   val uiactor = actorSystem.actorOf(Props(new GraphWidgetActor))
-  val series = new Series[String, Number]()
+  val series = new Series[Number, Number]()
   graph.getData().addAll(series)
 
   def close(): Unit = {
@@ -55,7 +56,7 @@ class GraphWidget(private val graph:LineChart[String, Number],
       case KpiNotify(stat: ClusterStat) => Platform.runLater {
         println("CPU : " + stat.nodes.process.cpu.percent)
         if(series.getData().size() > 10) series.getData().remove(0)
-        series.getData().add(Data[String, Number](dateFormat.format(new Date(stat.timestamp)), stat.nodes.process.cpu.percent))
+        series.getData().add(Data[Number, Number](stat.timestamp, extractor(stat)))
 
       }
     }

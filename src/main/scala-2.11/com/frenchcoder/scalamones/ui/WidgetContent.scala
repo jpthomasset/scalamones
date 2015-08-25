@@ -17,7 +17,7 @@ trait WidgetContent {
 trait WidgetLoader {
   def load(implicit actorSystem: ActorSystem, manager: ActorRef, server: Server) : WidgetContent
 
-  protected def loadFxml(title: String, fxmlPath: String)(implicit actorSystem: ActorSystem, manager: ActorRef, server: Server): WidgetContent = {
+  protected def loadFxml(title: String, fxmlPath: String, deps: Map[String, Any] = Map.empty)(implicit actorSystem: ActorSystem, manager: ActorRef, server: Server): WidgetContent = {
 
     val widget:WidgetPane = new WidgetPane()
     widget.setTitle(title)
@@ -26,7 +26,7 @@ trait WidgetLoader {
       "actorSystem" -> actorSystem,
       "manager" -> manager,
       "server" -> server,
-      "widgetPane" -> widget))
+      "widgetPane" -> widget) ++ deps)
 
     val loader = new FXMLLoader(getClass.getResource(fxmlPath), dependencies)
     val widgetContent: javafx.scene.Node = loader.load()
