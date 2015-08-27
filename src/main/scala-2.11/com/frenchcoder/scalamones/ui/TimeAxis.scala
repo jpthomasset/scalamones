@@ -3,9 +3,9 @@ package com.frenchcoder.scalamones.ui
 import java.text.SimpleDateFormat
 import java.util.Date
 import javafx.scene.chart.ValueAxis
-import scala.collection.JavaConversions._
 import scala.collection.JavaConverters._
 
+import com.frenchcoder.scalamones.utils.Conversion._
 /**
  *
  */
@@ -32,20 +32,23 @@ class TimeAxis extends ValueAxis[java.lang.Long] {
   override def calculateTickValues(v: Double, o: scala.Any): java.util.List[java.lang.Long] = {
     if(o != null) {
       val r = o.asInstanceOf[Range]
-      val seq = if(r.min == r.max) Seq(r.min) else r.min until(r.max, r.majorTickStep)
+      val seq = if(r.min == r.max) Seq(r.min) else r.min to(r.max, r.majorTickStep)
 
-      (for(n <- seq) yield n.toLong.asInstanceOf[java.lang.Long]).asJava
+      val s = (for(n <- seq) yield n.toLong.asInstanceOf[java.lang.Long])
+      println(s"Range ${getTickMarkLabel(r.min)} -> ${getTickMarkLabel(r.max)}")
+      println("TickValues = " + (s.map { n => getTickMarkLabel(n)} mkString ", "))
+      s.asJava
     } else {
-      List.empty[java.lang.Long]
+      List.empty[java.lang.Long].asJava
     }
   }
 
   override def calculateMinorTickMarks(): java.util.List[java.lang.Long] = {
     if(currentRange != null) {
-      (for(n <- currentRange.min until(currentRange.max, currentRange.minorTickStep))
+      (for(n <- currentRange.min to(currentRange.max, currentRange.minorTickStep))
         yield n.toLong.asInstanceOf[java.lang.Long]).asJava
     } else {
-      List.empty[java.lang.Long]
+      List.empty[java.lang.Long].asJava
     }
   }
 
@@ -57,9 +60,7 @@ class TimeAxis extends ValueAxis[java.lang.Long] {
     val paddedMin = minValue - padding
     val paddedMax = maxValue + padding
 
-    val majorStep = (paddedMax - paddedMin) / (length / (4*labelSize))
-    println(s"length ${length} - ${labelSize}")
-    println(s"Step ${(paddedMax - paddedMin)} / ${(length / (4*labelSize))} => ${majorStep}")
+    val majorStep = (paddedMax - paddedMin) / (length / (4*labelSize)).toLong
     Range(calculateNewScale(length, paddedMin, paddedMax), paddedMin, paddedMax, majorStep, majorStep / 2)
 
   }
