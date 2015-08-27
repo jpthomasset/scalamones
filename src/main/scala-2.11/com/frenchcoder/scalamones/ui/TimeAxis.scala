@@ -10,7 +10,7 @@ import scala.collection.JavaConverters._
 /**
  *
  */
-class TimeAxis extends ValueAxis[java.lang.Long](1440655187000L, 1440655387000L) {
+class TimeAxis extends ValueAxis[java.lang.Long] {
   override def calculateMinorTickMarks(): java.util.List[java.lang.Long] = {
     if(currentRange != null) {
       val ticks = (for(n <- currentRange.min until(currentRange.max, currentRange.minorTickStep))
@@ -26,13 +26,13 @@ class TimeAxis extends ValueAxis[java.lang.Long](1440655187000L, 1440655387000L)
 
   case class Range(scale:Double, min: Double, max: Double, majorTickStep: Double, minorTickStep: Double)
 
-  var currentRange:Range = Range(1, 1, 100, 20, 10)
-  setLowerBound(new Date().getTime)
-  setUpperBound(new Date().getTime)
+  var currentRange:Range = autoRange(1440655187000.0, 1440655387000.0, 200, 20).asInstanceOf[Range]
+  setRange(currentRange, false)
 
   override def getTickMarkLabel(t: java.lang.Long): String = {
-    //println(s"Formating ${t}")
-    (new SimpleDateFormat("hh:mm:ss")).format(new Date(t))
+    val s = (new SimpleDateFormat("hh:mm:ss")).format(new Date(t))
+    println(s"Formating ${t} => ${s}")
+    s
   }
 
   override def getRange = {
@@ -45,6 +45,7 @@ class TimeAxis extends ValueAxis[java.lang.Long](1440655187000L, 1440655387000L)
       currentRange = o.asInstanceOf[Range]
       println("setRange with value " + currentRange)
       setLowerBound(currentRange.min)
+      currentLowerBound.set(currentRange.min)
       setUpperBound(currentRange.max)
       setScale(currentRange.scale)
     }
