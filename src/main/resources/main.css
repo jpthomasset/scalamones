@@ -53,6 +53,21 @@
     -fx-alignment: center-right;
 }
 
+.instant-values {
+    -fx-min-width: 100px;
+    -fx-padding: 10px 5px;
+}
+.current-value {
+    /*-fx-text-fill: #4285f4;*/
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-padding: 0 0 10px 0;
+}
+
+.min-value, .max-value {
+    -fx-font-size: 10px;
+}
+
 .chart-series-line {
     /*-fx-effect: null;*/
 }

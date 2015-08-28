@@ -13,7 +13,6 @@ class TimeAxis extends ValueAxis[java.lang.Long] {
   case class Range(scale:Double, min: Double, max: Double, majorTickStep: Double, minorTickStep: Double)
 
   var currentRange:Range = null
-  //setRange(autoRange(1, 100, 200, 20).asInstanceOf[Range], false)
 
   override def getTickMarkLabel(t: java.lang.Long): String = new SimpleDateFormat("kk:mm:ss").format(new Date(t))
 
@@ -44,10 +43,7 @@ class TimeAxis extends ValueAxis[java.lang.Long] {
 
     val seq = if(min == max) Seq(min) else min to(max, step)
 
-    val l = (for(n <- seq) yield n.toLong.asInstanceOf[java.lang.Long])
-
-    println(s"Ticks ${getTickMarkLabel(min.toLong)}, ${getTickMarkLabel(max.toLong)} => " + (l map{getTickMarkLabel(_)} mkString(", ")))
-    l.asJava
+    (for(n <- seq) yield n.toLong.asInstanceOf[java.lang.Long]).asJava
   }
 
   override def calculateMinorTickMarks(): java.util.List[java.lang.Long] = {

@@ -3,7 +3,7 @@ package com.frenchcoder.scalamones.ui
 import akka.actor.{Props, Actor, ActorRef, ActorSystem}
 import com.frenchcoder.scalamones.elastic.Stat.ClusterHealth
 import com.frenchcoder.scalamones.service.KpiProvider.KpiNotify
-import com.frenchcoder.scalamones.service.Manager.UnMonitor
+import com.frenchcoder.scalamones.service.Manager.{Monitor, UnMonitor}
 import com.frenchcoder.scalamones.service.Server
 
 import scalafx.application.Platform
@@ -38,7 +38,7 @@ class ClusterWidget(private val clusterNameLabel:Label,
 
   class ClusterWidgetActor extends Actor {
 
-    // manager ! Monitor[ClusterHealth](server.id)
+    manager ! Monitor[ClusterHealth](server.id)
 
     def receive = {
       case Stop =>

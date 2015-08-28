@@ -15,20 +15,39 @@ import scalafx.application.Platform
 import scalafx.event.Event
 import scalafx.scene.chart.XYChart.{Data, Series}
 import scalafx.scene.chart.{XYChart, LineChart}
+import scalafx.scene.control.Label
 import scalafxml.core.{FXMLLoader, ExplicitDependencies}
 import scalafxml.core.macros.sfxml
 
 object CpuWidgetLoader extends WidgetLoader {
-  def load(implicit actorSystem: ActorSystem, manager: ActorRef, server: Server): WidgetContent  = loadFxml("CPU", "/graph-widget.fxml", Map("extractor" -> ((e:ClusterStat) => e.nodes.process.cpu.percent)))
+  val d = Map("extractor" -> ((e:ClusterStat) => e.nodes.process.cpu.percent),
+              "formatter" -> ((n:Number) => n.toString + "%"))
+  def load(implicit actorSystem: ActorSystem, manager: ActorRef, server: Server): WidgetContent  = loadFxml("CPU", "/graph-widget.fxml", d)
 }
 
 object RamWidgetLoader extends WidgetLoader {
-  def load(implicit actorSystem: ActorSystem, manager: ActorRef, server: Server): WidgetContent  = loadFxml("Memory", "/graph-widget.fxml", Map("extractor" -> ((e:ClusterStat) => e.nodes.jvm.mem.heap_used_in_bytes)))
+  val d = Map("extractor" -> ((e:ClusterStat) => e.nodes.jvm.mem.heap_used_in_bytes),
+              "formatter" -> {formatter(_)})
+  def load(implicit actorSystem: ActorSystem, manager: ActorRef, server: Server): WidgetContent  = loadFxml("Memory", "/graph-widget.fxml", d)
+
+  private def formatter(n:Number) : String = {
+    val d = n.doubleValue()
+    if(d < 1000) n.toString + " B"
+    else {
+      val exp = math.min(math.floor(math.log(d) / math.log(1000)), 6).toInt
+      val unit = Array("kB", "MB", "GB", "TB", "PB", "EB")
+      f"${d / math.pow(1000, exp)}%.1f ${unit(exp -1)}%s"
+    }
+  }
 }
 
 @sfxml
 class GraphWidget(private val graph:LineChart[Number, Number],
+                  private val currentLabel: Label,
+                  private val minLabel: Label,
+                  private val maxLabel: Label,
                   private val extractor: (ClusterStat) => Number,
+                  private val formatter: (Number) => String,
                   private val actorSystem: ActorSystem,
                   private val manager: ActorRef,
                   private val server: Server,
@@ -37,6 +56,9 @@ class GraphWidget(private val graph:LineChart[Number, Number],
 
   val uiactor = actorSystem.actorOf(Props(new GraphWidgetActor))
   val series = new Series[Number, Number]()
+  var min = Double.MaxValue
+  var max = Double.MinValue
+
   graph.getData().addAll(series)
 
   def close(): Unit = {
@@ -54,7 +76,6 @@ class GraphWidget(private val graph:LineChart[Number, Number],
         manager ! UnMonitor[ClusterStat](server.id)
         context.stop(self)
       case KpiNotify(stat: ClusterStat) => Platform.runLater {
-        println("CPU : " + stat.nodes.process.cpu.percent)
         addData(stat.timestamp, extractor(stat))
 
       }
@@ -68,6 +89,12 @@ class GraphWidget(private val graph:LineChart[Number, Number],
     val mints = series.getData().get(0).getXValue.longValue
     val axis = graph.getXAxis.asInstanceOf[TimeAxis]
 
+    if(value.doubleValue() < min) min = value.doubleValue()
+    if(value.doubleValue() > max) max = value.doubleValue()
+
+    currentLabel.text = formatter(value)
+    minLabel.text = formatter(min)
+    maxLabel.text = formatter(max)
 
     axis.setLowerBound(mints)
     if((timestamp - mints) < 10*5000) {
@@ -75,8 +102,6 @@ class GraphWidget(private val graph:LineChart[Number, Number],
     } else {
       axis.setUpperBound(timestamp)
     }
-
-    println(s"Force Bound ${axis.getTickMarkLabel(axis.getLowerBound().toLong)} -> ${axis.getUpperBound().toLong}}")
   }
 
 

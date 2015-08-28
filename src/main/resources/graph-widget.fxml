@@ -2,10 +2,26 @@
 
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
-<?import javafx.scene.chart.CategoryAxis?>
 
 <?import com.frenchcoder.scalamones.ui.TimeAxis?>
-<LineChart fx:id="graph" maxHeight="100" xmlns="http://javafx.com/javafx/8.0.45" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frenchcoder.scalamones.ui.GraphWidget" animated="false">
-   <xAxis><TimeAxis side="BOTTOM" autoRanging="false"/></xAxis>
-   <yAxis><NumberAxis side="LEFT" lowerBound="0" upperBound="100"/></yAxis>
-</LineChart>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Label?>
+
+<HBox xmlns="http://javafx.com/javafx/8.0.45" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frenchcoder.scalamones.ui.GraphWidget" >
+   <LineChart fx:id="graph" maxHeight="100" animated="false">
+      <xAxis><TimeAxis side="BOTTOM" autoRanging="false"/></xAxis>
+      <yAxis><NumberAxis side="LEFT" lowerBound="0" upperBound="100"/></yAxis>
+   </LineChart>
+   <VBox styleClass="instant-values">
+      <Label fx:id="currentLabel" styleClass="current-value"/>
+      <HBox>
+         <Label text="min:" styleClass="min-value"/>
+         <Label fx:id="minLabel" text="-" styleClass="min-value"/>
+      </HBox>
+      <HBox>
+         <Label text="max:" styleClass="max-value"/>
+         <Label fx:id="maxLabel" text="-" styleClass="max-value"/>
+      </HBox>
+   </VBox>
+</HBox>
