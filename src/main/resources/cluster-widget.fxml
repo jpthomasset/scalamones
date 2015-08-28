@@ -26,11 +26,17 @@
                 <Label fx:id="clusterStatusLabel" styleClass="value" />
             </HBox>
 
-            <Label text="Uptime" GridPane.rowIndex="2" GridPane.columnIndex="0" styleClass="header"/>
-            <Label fx:id="clusterUptimeLabel" GridPane.rowIndex="2" GridPane.columnIndex="1" styleClass="value"/>
+            <Label text="Nodes" GridPane.rowIndex="2" GridPane.columnIndex="0" styleClass="header"/>
+            <Label fx:id="clusterNodesLabel" GridPane.rowIndex="2" GridPane.columnIndex="1" styleClass="value"/>
 
-            <Label text="Shards" GridPane.rowIndex="3" GridPane.columnIndex="0" styleClass="header"/>
-            <Label fx:id="clusterShardsLabel" GridPane.rowIndex="3" GridPane.columnIndex="1" styleClass="value"/>
+            <Label text="Uptime" GridPane.rowIndex="3" GridPane.columnIndex="0" styleClass="header"/>
+            <Label fx:id="clusterUptimeLabel" GridPane.rowIndex="3" GridPane.columnIndex="1" styleClass="value"/>
+
+            <Label text="Indices" GridPane.rowIndex="4" GridPane.columnIndex="0" styleClass="header"/>
+            <Label fx:id="clusterIndicesLabel" GridPane.rowIndex="4" GridPane.columnIndex="1" styleClass="value"/>
+
+            <Label text="Shards" GridPane.rowIndex="5" GridPane.columnIndex="0" styleClass="header"/>
+            <Label fx:id="clusterShardsLabel" GridPane.rowIndex="5" GridPane.columnIndex="1" styleClass="value"/>
         </GridPane>
     </children>
 </VBox>

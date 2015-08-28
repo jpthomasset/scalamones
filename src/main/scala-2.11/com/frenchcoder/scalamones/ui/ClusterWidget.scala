@@ -1,11 +1,14 @@
 package com.frenchcoder.scalamones.ui
 
 import akka.actor.{Props, Actor, ActorRef, ActorSystem}
+import com.frenchcoder.scalamones.elastic.ClusterStat.ClusterStat
 import com.frenchcoder.scalamones.elastic.Stat.ClusterHealth
 import com.frenchcoder.scalamones.service.KpiProvider.KpiNotify
 import com.frenchcoder.scalamones.service.Manager.{Monitor, UnMonitor}
 import com.frenchcoder.scalamones.service.Server
+import com.frenchcoder.scalamones.utils.Conversion.millisToHuman
 
+import scala.concurrent.duration._
 import scalafx.application.Platform
 import scalafx.scene.chart.{NumberAxis, LineChart}
 import scalafx.scene.control.{Label, Tab}
@@ -23,7 +26,9 @@ class ClusterWidget(private val clusterNameLabel:Label,
                     private val clusterStatusShape: Circle,
                     private val clusterStatusLabel: Label,
                     private val clusterUptimeLabel:Label,
+                    private val clusterNodesLabel:Label,
                     private val clusterShardsLabel:Label,
+                    private val clusterIndicesLabel:Label,
                     private val actorSystem: ActorSystem,
                     private val manager: ActorRef,
                     private val server: Server,
@@ -39,6 +44,7 @@ class ClusterWidget(private val clusterNameLabel:Label,
   class ClusterWidgetActor extends Actor {
 
     manager ! Monitor[ClusterHealth](server.id)
+    manager ! Monitor[ClusterStat](server.id)
 
     def receive = {
       case Stop =>
@@ -51,6 +57,12 @@ class ClusterWidget(private val clusterNameLabel:Label,
         clusterStatusShape.styleClass.clear
         clusterStatusShape.styleClass += "status-" + health.status
         clusterStatusLabel.text = health.status
+      }
+
+      case KpiNotify(stat:ClusterStat) => Platform.runLater {
+        clusterIndicesLabel.text = stat.indices.count.toString
+        clusterUptimeLabel.text = millisToHuman(stat.nodes.jvm.max_uptime_in_millis)
+        clusterNodesLabel.text = stat.nodes.count.total.toString
       }
     }
   }
