@@ -12,7 +12,10 @@
              <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES"></ColumnConstraints>
              <ColumnConstraints halignment="RIGHT"></ColumnConstraints>
          </columnConstraints>
-         <Label fx:id="titleLabel" styleClass="widget-title" text="Widget title" />
+        <HBox>
+            <ImageView visible="false"><Image url="@/ico/table.png"/></ImageView>
+            <Label fx:id="titleLabel" styleClass="widget-title" text="Widget title" />
+        </HBox>
           <HBox GridPane.columnIndex="1" spacing="3">
               <Button onAction="#minimize" visible="false">
                   <graphic>
