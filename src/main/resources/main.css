@@ -7,14 +7,26 @@
     -fx-stroke: #888;
 }
 
+.bg-red {
+    -fx-background-color: linear-gradient(#d9534f, #c12e2a);
+}
+
 .status-red{
     -fx-fill: linear-gradient(#d9534f, #c12e2a);
     -fx-stroke: #b92c28;
 }
 
+.bg-yellow {
+    -fx-background-color: linear-gradient(#f0ad4e, #eb9316);
+}
+
 .status-yellow{
     -fx-fill: linear-gradient(#f0ad4e, #eb9316);
     -fx-stroke: #e38d13;
+}
+
+.bg-green {
+    -fx-background-color: linear-gradient(#5cb85c,#419641);
 }
 
 .status-green{
@@ -60,14 +72,28 @@
 
 .current-value {
     -fx-background-radius: 50px;
-    /*-fx-text-fill: #4285f4;*/
-    -fx-font-size: 20px;
+    -fx-font-size: 22px;
     -fx-font-weight: bold;
-    -fx-padding: 0 0 10px 0;
+}
+.current-box {
+    -fx-background-radius: 5px;
+    -fx-padding: 3px 0;
+}
+
+.current-box Label {
+    -fx-text-fill: #fff;
+}
+
+.current-unit {
+    -fx-padding: 2px 0 2px 2px;
 }
 
 .min-value, .max-value {
     -fx-font-size: 10px;
+}
+
+.max-value {
+    -fx-padding: 5px 0 0 0;
 }
 
 .chart-series-line {

@@ -21,7 +21,7 @@ import scalafxml.core.macros.sfxml
 
 object CpuWidgetLoader extends WidgetLoader {
   val d = Map("extractor" -> ((e:ClusterStat) => e.nodes.process.cpu.percent),
-              "formatter" -> ((n:Number) => n.toString + "%"))
+              "formatter" -> ((n:Number) => (n.toString, "%")))
   def load(implicit actorSystem: ActorSystem, manager: ActorRef, server: Server): WidgetContent  = loadFxml("CPU", "/graph-widget.fxml", d)
 }
 
@@ -30,13 +30,15 @@ object RamWidgetLoader extends WidgetLoader {
               "formatter" -> {formatter(_)})
   def load(implicit actorSystem: ActorSystem, manager: ActorRef, server: Server): WidgetContent  = loadFxml("Memory", "/graph-widget.fxml", d)
 
-  private def formatter(n:Number) : String = {
+  private def formatter(n:Number) : (String, String) = {
     val d = n.doubleValue()
-    if(d < 1000) n.toString + " B"
+    if(d < 1000) (n.toString, " B")
     else {
       val exp = math.min(math.floor(math.log(d) / math.log(1000)), 6).toInt
       val unit = Array("kB", "MB", "GB", "TB", "PB", "EB")
-      f"${d / math.pow(1000, exp)}%.1f ${unit(exp -1)}%s"
+      val value = d / math.pow(1000, exp)
+      val rounded = if(value > 5) math.round(value) else math.round(value * 10) / 10
+      (rounded.toString, unit(exp -1))
     }
   }
 }
@@ -44,10 +46,11 @@ object RamWidgetLoader extends WidgetLoader {
 @sfxml
 class GraphWidget(private val graph:LineChart[Number, Number],
                   private val currentLabel: Label,
+                  private val currentUnitLabel: Label,
                   private val minLabel: Label,
                   private val maxLabel: Label,
                   private val extractor: (ClusterStat) => Number,
-                  private val formatter: (Number) => String,
+                  private val formatter: (Number) => (String, String),
                   private val actorSystem: ActorSystem,
                   private val manager: ActorRef,
                   private val server: Server,
@@ -92,9 +95,9 @@ class GraphWidget(private val graph:LineChart[Number, Number],
     if(value.doubleValue() < min) min = value.doubleValue()
     if(value.doubleValue() > max) max = value.doubleValue()
 
-    currentLabel.text = formatter(value)
-    minLabel.text = formatter(min)
-    maxLabel.text = formatter(max)
+    formatter(value) match { case (a,b) => currentLabel.text = a; currentUnitLabel.text = b}
+    formatter(min) match { case (a,b) => minLabel.text = a + " " +b }
+    formatter(max) match { case (a,b) => maxLabel.text = a + " " +b }
 
     axis.setLowerBound(mints)
     if((timestamp - mints) < 10*5000) {

@@ -16,17 +16,17 @@
       <yAxis><NumberAxis side="LEFT" lowerBound="0" upperBound="100"/></yAxis>
    </LineChart>
    <VBox styleClass="instant-values">
-       <StackPane>
-           <Circle styleClass="current-circle"></Circle>
+       <HBox alignment="BOTTOM_CENTER" styleClass="current-box, bg-green">
            <Label fx:id="currentLabel" styleClass="current-value"/>
-       </StackPane>
+           <Label fx:id="currentUnitLabel" styleClass="current-unit"/>
+       </HBox>
       <HBox>
-         <Label text="min:" styleClass="min-value"/>
-         <Label fx:id="minLabel" text="-" styleClass="min-value"/>
-      </HBox>
-      <HBox>
-         <Label text="max:" styleClass="max-value"/>
+         <Label text="max: " styleClass="max-value"/>
          <Label fx:id="maxLabel" text="-" styleClass="max-value"/>
       </HBox>
+       <HBox>
+           <Label text="min: " styleClass="min-value"/>
+           <Label fx:id="minLabel" text="-" styleClass="min-value"/>
+       </HBox>
    </VBox>
 </HBox>

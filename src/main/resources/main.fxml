@@ -7,7 +7,7 @@
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
-<VBox stylesheets="@/main.css" prefHeight="800.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8.0.45" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frenchcoder.scalamones.ui.MainController">
+<VBox stylesheets="@/main.css" prefHeight="800" prefWidth="1280" xmlns="http://javafx.com/javafx/8.0.45" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frenchcoder.scalamones.ui.MainController">
   <children>
     <MenuBar VBox.vgrow="NEVER">
          <menus>
