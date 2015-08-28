@@ -57,7 +57,9 @@
     -fx-min-width: 100px;
     -fx-padding: 10px 5px;
 }
+
 .current-value {
+    -fx-background-radius: 50px;
     /*-fx-text-fill: #4285f4;*/
     -fx-font-size: 20px;
     -fx-font-weight: bold;
