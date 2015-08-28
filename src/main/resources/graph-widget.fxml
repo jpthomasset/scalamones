@@ -6,6 +6,6 @@
 
 <?import com.frenchcoder.scalamones.ui.TimeAxis?>
 <LineChart fx:id="graph" maxHeight="100" xmlns="http://javafx.com/javafx/8.0.45" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frenchcoder.scalamones.ui.GraphWidget" animated="false">
-   <xAxis><TimeAxis side="BOTTOM"/></xAxis>
+   <xAxis><TimeAxis side="BOTTOM" autoRanging="false"/></xAxis>
    <yAxis><NumberAxis side="LEFT" lowerBound="0" upperBound="100"/></yAxis>
 </LineChart>

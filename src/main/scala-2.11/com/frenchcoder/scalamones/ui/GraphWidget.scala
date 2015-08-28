@@ -55,11 +55,28 @@ class GraphWidget(private val graph:LineChart[Number, Number],
         context.stop(self)
       case KpiNotify(stat: ClusterStat) => Platform.runLater {
         println("CPU : " + stat.nodes.process.cpu.percent)
-        if(series.getData().size() > 10) series.getData().remove(0)
-        series.getData().add(Data[Number, Number](stat.timestamp, extractor(stat)))
+        addData(stat.timestamp, extractor(stat))
 
       }
     }
+  }
+
+  def addData(timestamp:Long, value:Number): Unit = {
+    series.getData().add(Data[Number, Number](timestamp, value))
+    if(series.getData().size() > 10) series.getData().remove(0)
+
+    val mints = series.getData().get(0).getXValue.longValue
+    val axis = graph.getXAxis.asInstanceOf[TimeAxis]
+
+
+    axis.setLowerBound(mints)
+    if((timestamp - mints) < 10*5000) {
+      axis.setUpperBound(mints + 10*5000)
+    } else {
+      axis.setUpperBound(timestamp)
+    }
+
+    println(s"Force Bound ${axis.getTickMarkLabel(axis.getLowerBound().toLong)} -> ${axis.getUpperBound().toLong}}")
   }
 
 

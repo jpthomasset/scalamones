@@ -52,3 +52,12 @@
 .right {
     -fx-alignment: center-right;
 }
+
+.chart-series-line {
+    /*-fx-effect: null;*/
+}
+
+.chart-line-symbol {
+    /*-fx-background-color: #fab;
+    -fx-shape: null;*/
+}

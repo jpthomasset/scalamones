@@ -13,7 +13,7 @@ class TimeAxis extends ValueAxis[java.lang.Long] {
   case class Range(scale:Double, min: Double, max: Double, majorTickStep: Double, minorTickStep: Double)
 
   var currentRange:Range = null
-  setRange(autoRange(1, 100, 200, 20).asInstanceOf[Range], false)
+  //setRange(autoRange(1, 100, 200, 20).asInstanceOf[Range], false)
 
   override def getTickMarkLabel(t: java.lang.Long): String = new SimpleDateFormat("kk:mm:ss").format(new Date(t))
 
@@ -30,17 +30,24 @@ class TimeAxis extends ValueAxis[java.lang.Long] {
   }
 
   override def calculateTickValues(v: Double, o: scala.Any): java.util.List[java.lang.Long] = {
+
     if(o != null) {
       val r = o.asInstanceOf[Range]
-      val seq = if(r.min == r.max) Seq(r.min) else r.min to(r.max, r.majorTickStep)
-
-      val s = (for(n <- seq) yield n.toLong.asInstanceOf[java.lang.Long])
-      println(s"Range ${getTickMarkLabel(r.min)} -> ${getTickMarkLabel(r.max)}")
-      println("TickValues = " + (s.map { n => getTickMarkLabel(n)} mkString ", "))
-      s.asJava
+      tickValues(r.min, r.max, r.majorTickStep)
     } else {
-      List.empty[java.lang.Long].asJava
+      val r = autoRange(getLowerBound,getUpperBound, getWidth, 20).asInstanceOf[Range]
+      tickValues(r.min, r.max, r.majorTickStep)
     }
+  }
+
+  def tickValues(min:Double, max:Double, step:Double): java.util.List[java.lang.Long] = {
+
+    val seq = if(min == max) Seq(min) else min to(max, step)
+
+    val l = (for(n <- seq) yield n.toLong.asInstanceOf[java.lang.Long])
+
+    println(s"Ticks ${getTickMarkLabel(min.toLong)}, ${getTickMarkLabel(max.toLong)} => " + (l map{getTickMarkLabel(_)} mkString(", ")))
+    l.asJava
   }
 
   override def calculateMinorTickMarks(): java.util.List[java.lang.Long] = {
@@ -54,14 +61,11 @@ class TimeAxis extends ValueAxis[java.lang.Long] {
 
   override def autoRange(minValue: Double, maxValue: Double, length: Double, labelSize: Double) : AnyRef = {
 
+    val l = if(length > 0) length else 200
     val range = maxValue - minValue
-    val paddedRange = if(range == 0) 2 else range*1.02
-    val padding = (paddedRange - range) / 2
-    val paddedMin = minValue - padding
-    val paddedMax = maxValue + padding
 
-    val majorStep = (paddedMax - paddedMin) / (length / (4*labelSize)).toLong
-    Range(calculateNewScale(length, paddedMin, paddedMax), paddedMin, paddedMax, majorStep, majorStep / 2)
+    val majorStep = (range) / (l / (4*labelSize)).toLong
+    Range(calculateNewScale(length, minValue, maxValue), minValue, maxValue, majorStep, majorStep / 2)
 
   }
 }
