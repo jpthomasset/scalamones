@@ -26,6 +26,7 @@ object Manager {
   case class ServerList(servers: Set[Server])
   case class ServerAdded(server: Server)
   case class ServerRemoved(server: Server)
+  case class ServerAlreadyExists(url: Uri)
   case class NoSuchServer(serverId: Int)
 
   case class MonitorServerListChange()
@@ -62,13 +63,19 @@ class Manager(implicit s:SendReceive) extends Actor {
 
   def receive = {
     case AddServer(url) =>
-      val serverService = KpiProvider.startServices(url)
-      val serverContext = ServerContext(Server(nextServerId, url), serverService)
+      // Check server is not already registered
+      servers.find(_._2.server.url == url) match {
+        case Some(x) => sender ! ServerAlreadyExists(url)
+        case None => {
+          val serverService = KpiProvider.startServices(url)
+          val serverContext = ServerContext(Server(nextServerId, url), serverService)
 
-      // Store services for future usage
-      servers += (serverContext.server.id -> serverContext)
-      sender ! ServerAdded(serverContext.server)
-      broadcastServerListChange()
+          // Store services for future usage
+          servers += (serverContext.server.id -> serverContext)
+          sender ! ServerAdded(serverContext.server)
+          broadcastServerListChange()
+        }
+      }
 
     case ListServer => sender ! ServerList((servers map { case (k, v) => v.server }).toSet)
 

@@ -1,12 +1,13 @@
 package com.frenchcoder.scalamones.ui
 
 import akka.actor.{Props, ActorRef, ActorSystem, Actor}
-import com.frenchcoder.scalamones.service.Manager.{ServerAdded, AddServer, ServerList, MonitorServerListChange}
+import com.frenchcoder.scalamones.service.Manager._
 import com.frenchcoder.scalamones.service.Server
 import spray.http.Uri
 
 import scalafx.application.Platform
 import scalafx.event.ActionEvent
+import scalafx.scene.control.Alert.AlertType
 import scalafx.scene.control._
 import scalafxml.core.{FXMLLoader, ExplicitDependencies, FXMLView}
 import scalafxml.core.macros.sfxml
@@ -30,6 +31,14 @@ class MainController(private val serversMenu: Menu,
       case ServerList(servers) => Platform.runLater { onServerList(servers) }
       case AddServer(url) => manager ! AddServer(url)
       case ServerAdded(server) => Platform.runLater { onServerAdded(server) }
+      case ServerAlreadyExists(url) => Platform.runLater {
+        new Alert(AlertType.Information) {
+          title = "Information"
+          headerText = s"Server '${url}' already monitored !"
+          contentText = "Please specify another address."
+        }.showAndWait()
+        onAddServer(null)
+      }
     }
   }
 
@@ -45,7 +54,6 @@ class MainController(private val serversMenu: Menu,
 
   def onAddServer(event: ActionEvent) = {
     val dialog = new TextInputDialog(defaultValue = "http://127.0.0.1:9200") {
-      //initOwner(stage)
       title = "Add a new server"
       headerText = "Enter the url of the server to monitor,\nincluding protocol and port.\n\n(i.e.'http://127.0.0.1:9200)"
       contentText = "Server URL:"
