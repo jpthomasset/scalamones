@@ -44,12 +44,13 @@ class MainController(private val serversMenu: Menu,
 
   def onServerList(servers:Set[Server]): Unit = {
     statusLabel.text = "Received new server list : " + servers.size
+    /*
     if(serversMenu.items.size > 1) {
       serversMenu.items.remove(1, serversMenu.items.size)
     }
     serversMenu.items.add(new SeparatorMenuItem())
     servers map { s => serversMenu.items.add(new MenuItem(s.url.toString())) }
-
+    */
   }
 
   def onAddServer(event: ActionEvent) = {
