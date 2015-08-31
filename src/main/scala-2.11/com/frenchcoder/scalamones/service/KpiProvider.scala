@@ -57,7 +57,7 @@ class KpiProvider[T: FromResponseUnmarshaller, U: FromResponseUnmarshaller](val 
   import context.become
   // Internal operation
   case class SendRequest()
-  sendReceive
+  case class KpiError(error: Throwable)
 
 
   val pipeline = s ~> unmarshal[T]
@@ -73,7 +73,7 @@ class KpiProvider[T: FromResponseUnmarshaller, U: FromResponseUnmarshaller](val 
       watchers += watcher
       // Schedule update every 5 seconds
       val scheduledRequestor = context.system.scheduler.schedule(0.seconds, 5.seconds, self, SendRequest)
-      become(active(scheduledRequestor))
+      become(active(scheduledRequestor) orElse waitingForRequest(scheduledRequestor))
   }
 
   def active(scheduledRequestor: Cancellable): Receive = {
@@ -86,29 +86,47 @@ class KpiProvider[T: FromResponseUnmarshaller, U: FromResponseUnmarshaller](val 
     case KpiUnMonitor(watcher) =>
       log.debug("UnMonitor message received")
       watchers -= watcher
-      if(watchers.isEmpty) {
+      if (watchers.isEmpty) {
         log.debug("No more watchers, become idle")
         scheduledRequestor.cancel()
         latestValue = None
         become(idle)
       }
+    case KpiError(error) =>
+      // Todo Forward error to manager ?
+      become(active(scheduledRequestor) orElse waitingForRequest(scheduledRequestor))
+
+  }
+
+  def waitingForRequest(scheduledRequestor: Cancellable): Receive = {
 
     case SendRequest =>
-      val f = pipeline { Get(url) }
+      val f = pipeline {
+        Get(url)
+      }
       f onComplete {
         case Success(data) =>
           log.debug(s"Received new data from ${url}")
-          if(data.isInstanceOf[T]) {
+          if (data.isInstanceOf[T]) {
             val embed = extractor(data.asInstanceOf[T])
-            if(embed.isInstanceOf[U]) {
-              latestValue = Some(embed)
-              // Notify watchers of new value
-              watchers foreach( _ ! KpiNotify(embed))
+            if (embed.isInstanceOf[U]) {
+              // Notify self of new value
+              self ! KpiNotify(embed)
             }
           }
 
-        case Failure(error) => log.error(error, s"Error while fetching data from ${url}")
+        case Failure(error) =>
+          self ! KpiError(error)
+          log.error(error, s"Error while fetching data from ${url}")
       }
+      become(active(scheduledRequestor) orElse waitingForResponse(scheduledRequestor))
+  }
 
+  def waitingForResponse(scheduledRequestor: Cancellable): Receive = {
+
+    case KpiNotify(data) =>
+      latestValue = Some(data.asInstanceOf[U])
+      watchers foreach( _ ! KpiNotify(data))
+      become(active(scheduledRequestor) orElse waitingForRequest(scheduledRequestor))
   }
 }
