@@ -17,7 +17,8 @@ User Interface
 Services
 --------
 * Add some comments in code
-* Handle cancel outstanding request in KpiProvider
+* Handle cancel outstanding request in KpiProvider when stopping provider. This seems difficult without handling low
+level io. see http://spray.io/documentation/1.2.3/spray-can/common-behavior/#commonbehavior
 * Handle connection error in KpiProvider and report them to requester
 * Expose refresh interval to Kpi requester
 * Refactor Stat classes using [spray-json-infer](https://github.com/jpthomasset/spray-json-infer)
