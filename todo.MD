@@ -25,7 +25,6 @@ level io. see http://spray.io/documentation/1.2.3/spray-can/common-behavior/#com
 
 Tests
 -----
-* Add test case for Manager to check we cannot add multiple times the same server
 * Add ui test, there is none !
 
 Other
