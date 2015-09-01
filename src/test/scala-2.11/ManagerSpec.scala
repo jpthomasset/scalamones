@@ -48,7 +48,7 @@ with WordSpecLike with Matchers with BeforeAndAfterAll {
 
       expectMsgType[ServerAdded]
 
-      val result1 = expectMsgType[ServerList].servers filter( s => s.url eq Uri("http://es.example.com:1234"))
+      val result1 = expectMsgType[ServerList].servers filter( s => s.url == Uri("http://es.example.com:1234"))
       result1.size should be(1)
 
     }
