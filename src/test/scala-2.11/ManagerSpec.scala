@@ -53,5 +53,16 @@ with WordSpecLike with Matchers with BeforeAndAfterAll {
 
     }
 
+    "prevent the same server from being added twice" in {
+      val manager = system.actorOf(Manager.props)
+      manager ! AddServer("http://es.example.com:1234")
+
+      val addedMsg = expectMsgType[ServerAdded]
+      addedMsg.server.url should be(Uri("http://es.example.com:1234"))
+
+      manager ! AddServer("http://es.example.com:1234")
+      expectMsgType[ServerAlreadyExists]
+    }
+
   }
 }
