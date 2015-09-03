@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<VBox fx:id="vbox" xmlns="http://javafx.com/javafx/8.0.45" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.frenchcoder.scalamones.ui.NodesWidget">
+    <children>
+        <GridPane styleClass="nodes-widget-table">
+            <columnConstraints>
+                <ColumnConstraints percentWidth="25"></ColumnConstraints>
+                <ColumnConstraints percentWidth="25"></ColumnConstraints>
+                <ColumnConstraints percentWidth="25"></ColumnConstraints>
+                <ColumnConstraints percentWidth="25"></ColumnConstraints>
+            </columnConstraints>
+
+            <Label text="Nodes" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="header"/>
+            <Label text="OS Cpu (%)" GridPane.rowIndex="0" GridPane.columnIndex="1" styleClass="header"/>
+            <Label text="Load (1m)" GridPane.rowIndex="0" GridPane.columnIndex="2" styleClass="header"/>
+            <Label text="JVM Memory (%)" GridPane.rowIndex="0" GridPane.columnIndex="3" styleClass="header"/>
+        </GridPane>
+        <StackPane fx:id="contentPane"/>
+    </children>
+</VBox>

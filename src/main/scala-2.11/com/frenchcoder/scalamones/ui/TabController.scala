@@ -22,6 +22,8 @@ class TabController(private val tab: Tab,
   addWidget(CpuWidgetLoader.load, 1, 0, 1, 1)
   addWidget(RamWidgetLoader.load, 2, 0, 1, 1)
 
+  addWidget(NodesWidgetLoader.load, 0, 1, 3, 1)
+
   /*loadFxmlWidget("Cluster", "/cluster-widget.fxml", 0, 0, 1, 1)
   loadFxmlWidget("CPU", "/graph-widget.fxml", 1, 0, 1, 1)
   loadFxmlWidget("Memory", "/graph-widget.fxml", 2, 0, 1, 1)

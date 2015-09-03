@@ -37,12 +37,12 @@
 .grid-widget-table {
     -fx-background-color: #ddd;
     -fx-hgap: 0;
-    -fx-vgap: 2;
-    -fx-border-width: 0 0 2 0;
+    -fx-vgap: 1;
+    -fx-border-width: 0 0 1 0;
     -fx-border-color: #ddd;
 }
 
-.grid-widget-table Label {
+.grid-widget-table Label, .nodes-widget-table Label {
     -fx-padding: 3px 5px;
     -fx-background-color: #fff;
     -fx-max-width: Infinity;
@@ -52,13 +52,21 @@
     -fx-background-color: #fff;
 }
 
-.grid-widget-table .header {
+.grid-widget-table .header, .nodes-widget-table .header {
     -fx-font-weight: bold;
 }
 
 .grid-widget-table .value {
     -fx-alignment: center-right;
     -fx-font-style: italic;
+}
+
+.nodes-widget-table {
+    -fx-background-color: #ddd;
+    -fx-hgap: 1;
+    -fx-vgap: 1;
+    -fx-border-width: 0 0 1 0;
+    -fx-border-color: #ddd;
 }
 
 .right {
