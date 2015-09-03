@@ -10,15 +10,17 @@ object Conversion {
     def _convert(u: List[(TimeUnit, String)], remaining: FiniteDuration, s:String) : String = {
       if(u.isEmpty) s
       else {
-        if(remaining > FiniteDuration(1, u.head._1)) {
+        if(remaining >= FiniteDuration(1, u.head._1)) {
           val v = remaining.toUnit(u.head._1).toInt
-          _convert(u.tail, remaining - FiniteDuration(v, u.head._1), s + v.toString + " " + u.head._2 + " ")
+          _convert(u.tail, remaining - FiniteDuration(v, u.head._1), s + v.toString + u.head._2 + " ")
         } else _convert(u.tail, remaining, s)
 
       }
     }
     val durationUnit = (DAYS, "d") :: (HOURS, "h") :: (MINUTES, "m") :: (SECONDS, "s") :: Nil
 
-    _convert(durationUnit, FiniteDuration(m, MILLISECONDS), "").trim
+    if(m<1) "0s"
+    else if(m<1000) "<1s"
+    else _convert(durationUnit, FiniteDuration(m, MILLISECONDS), "").trim
   }
 }
