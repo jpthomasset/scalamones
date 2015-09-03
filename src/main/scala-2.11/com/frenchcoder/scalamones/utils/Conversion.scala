@@ -1,6 +1,7 @@
 package com.frenchcoder.scalamones.utils
 
 import scala.concurrent.duration._
+import scala.language.implicitConversions
 
 object Conversion {
   implicit def doubleToJavaLong(d:Double) : java.lang.Long = d.toLong.asInstanceOf[java.lang.Long]
