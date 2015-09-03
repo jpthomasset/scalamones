@@ -1,4 +1,4 @@
-scalamones
+scalamones [![Build Status](https://travis-ci.org/jpthomasset/scalamones.svg)](https://travis-ci.org/jpthomasset/scalamones)
 ==========
 
 This program is a basic elastic search monitoring application for the desktop. I started this project as a scala learning
